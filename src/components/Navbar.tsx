@@ -3,7 +3,7 @@ import logo from "@/assets/logo-new.png";
 
 const Navbar = () => {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-card/95 backdrop-blur-sm border-b-2 border-primary/30">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-black backdrop-blur-sm">
       <div className="container mx-auto px-4 h-20 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
           <img 
