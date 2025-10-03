@@ -1,12 +1,61 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import Navbar from "@/components/Navbar";
+import FeatureCard from "@/components/FeatureCard";
+import MapModal from "@/components/MapModal";
+import resumoArcosImage from "@/assets/resumo-arcos.png";
+import personagensImage from "@/assets/personagens.png";
+import mapaImage from "@/assets/mapa.png";
 
 const Index = () => {
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-dark relative overflow-hidden">
+      {/* Animated background effects */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[100px] animate-glow-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[100px] animate-glow-pulse" style={{ animationDelay: "1s" }} />
       </div>
+
+      <Navbar />
+      
+      <main className="container mx-auto px-4 pt-32 pb-16 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12 animate-fade-in">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-title font-bold text-primary mb-4 text-glow">
+              Bem-vindo ao Limiar do Medo
+            </h2>
+            <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto">
+              Adentre um universo sombrio onde cada escolha pode ser a última
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <FeatureCard
+              title="Resumo dos Arcos"
+              image={resumoArcosImage}
+              link="/resumo-arcos"
+            />
+            
+            <FeatureCard
+              title="Personagens"
+              image={personagensImage}
+              link="/personagens"
+            />
+            
+            <FeatureCard
+              title="Mapa"
+              image={mapaImage}
+              onClick={() => setIsMapModalOpen(true)}
+            />
+          </div>
+        </div>
+      </main>
+
+      <MapModal 
+        isOpen={isMapModalOpen} 
+        onClose={() => setIsMapModalOpen(false)} 
+      />
     </div>
   );
 };
