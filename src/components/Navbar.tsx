@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { User } from "lucide-react";
+import { User, Crown } from "lucide-react";
 import logo from "@/assets/logo-new.png";
 import { useState } from "react";
 import LoginModal from "./LoginModal";
@@ -15,11 +15,15 @@ const Navbar = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black backdrop-blur-sm">
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 transition-transform hover:scale-105">
-            <img 
-              src={logo} 
-              alt="Fear Threshold Logo" 
-              className="h-12 w-auto"
-            />
+            {isAdmin ? (
+              <Crown className="h-12 w-12 text-primary" />
+            ) : (
+              <img 
+                src={logo} 
+                alt="Fear Threshold Logo" 
+                className="h-12 w-auto"
+              />
+            )}
           </Link>
           
           <Link to="/" className="absolute left-1/2 -translate-x-1/2">

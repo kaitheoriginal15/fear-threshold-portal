@@ -17,6 +17,7 @@ interface AddCharacterModalProps {
 interface YearData {
   year: number;
   imageUrl: string;
+  imageFile: File | null;
   stats: {
     resistencia: number;
     forca: number;
@@ -42,18 +43,20 @@ const AddCharacterModal = ({ isOpen, onClose, onSuccess }: AddCharacterModalProp
   const defaultStats = { resistencia: 0, forca: 0, velocidade: 0, controleEnergia: 0, ilusao: 0, inteligencia: 0, habilidadeGeral: 0, conhecimento: 0, arsenal: 0 };
   
   const [yearsData, setYearsData] = useState<YearData[]>([
-    { year: 1990, imageUrl: '', stats: { ...defaultStats } },
-    { year: 1991, imageUrl: '', stats: { ...defaultStats } },
-    { year: 1992, imageUrl: '', stats: { ...defaultStats } },
-    { year: 1993, imageUrl: '', stats: { ...defaultStats } },
-    { year: 1994, imageUrl: '', stats: { ...defaultStats } },
-    { year: 1995, imageUrl: '', stats: { ...defaultStats } },
+    { year: 1990, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+    { year: 1991, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+    { year: 1992, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+    { year: 1993, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+    { year: 1994, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+    { year: 1995, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
   ]);
 
-  const updateYearData = (yearIndex: number, field: string, value: string | number) => {
+  const updateYearData = (yearIndex: number, field: string, value: string | number | File) => {
     setYearsData(prev => {
       const updated = [...prev];
-      if (field === 'imageUrl') {
+      if (field === 'imageFile') {
+        updated[yearIndex].imageFile = value as File;
+      } else if (field === 'imageUrl') {
         updated[yearIndex].imageUrl = value as string;
       } else {
         updated[yearIndex].stats = {
@@ -85,16 +88,43 @@ const AddCharacterModal = ({ isOpen, onClose, onSuccess }: AddCharacterModalProp
 
       if (charError) throw charError;
 
-      const yearInserts = yearsData.map(yearData => ({
-        character_id: character.id,
-        year: yearData.year,
-        image_url: yearData.imageUrl,
-        stats: yearData.stats,
-      }));
+      // Upload images and get URLs
+      const yearInsertsWithUrls = await Promise.all(
+        yearsData.map(async (yearData) => {
+          let imageUrl = yearData.imageUrl;
+
+          if (yearData.imageFile) {
+            const fileExt = yearData.imageFile.name.split('.').pop();
+            const fileName = `${character.id}_${yearData.year}.${fileExt}`;
+            const filePath = `${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+              .from('character-images')
+              .upload(filePath, yearData.imageFile, {
+                upsert: true
+              });
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+              .from('character-images')
+              .getPublicUrl(filePath);
+
+            imageUrl = publicUrl;
+          }
+
+          return {
+            character_id: character.id,
+            year: yearData.year,
+            image_url: imageUrl,
+            stats: yearData.stats,
+          };
+        })
+      );
 
       const { error: yearsError } = await supabase
         .from('character_years')
-        .insert(yearInserts);
+        .insert(yearInsertsWithUrls);
 
       if (yearsError) throw yearsError;
 
@@ -125,12 +155,12 @@ const AddCharacterModal = ({ isOpen, onClose, onSuccess }: AddCharacterModalProp
     setRank('');
     setDescription('');
     setYearsData([
-      { year: 1990, imageUrl: '', stats: { ...defaultStats } },
-      { year: 1991, imageUrl: '', stats: { ...defaultStats } },
-      { year: 1992, imageUrl: '', stats: { ...defaultStats } },
-      { year: 1993, imageUrl: '', stats: { ...defaultStats } },
-      { year: 1994, imageUrl: '', stats: { ...defaultStats } },
-      { year: 1995, imageUrl: '', stats: { ...defaultStats } },
+      { year: 1990, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+      { year: 1991, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+      { year: 1992, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+      { year: 1993, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+      { year: 1994, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+      { year: 1995, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
     ]);
   };
 
@@ -213,13 +243,19 @@ const AddCharacterModal = ({ isOpen, onClose, onSuccess }: AddCharacterModalProp
               {yearsData.map((yearData, index) => (
                 <TabsContent key={yearData.year} value={yearData.year.toString()} className="space-y-4">
                   <div className="space-y-2">
-                    <Label className="text-white">URL da Imagem</Label>
+                    <Label className="text-white">Imagem do Personagem</Label>
                     <Input
-                      value={yearData.imageUrl}
-                      onChange={(e) => updateYearData(index, 'imageUrl', e.target.value)}
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) updateYearData(index, 'imageFile', file);
+                      }}
                       className="bg-black/50 border-primary/30 text-white"
-                      placeholder="https://..."
                     />
+                    {yearData.imageFile && (
+                      <p className="text-sm text-primary">{yearData.imageFile.name}</p>
+                    )}
                   </div>
                   <div className="grid grid-cols-3 gap-4">
                     {[

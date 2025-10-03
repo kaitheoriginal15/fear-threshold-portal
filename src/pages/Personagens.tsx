@@ -176,28 +176,7 @@ const Personagens = () => {
       descricao: char.description || '',
       onClick: () => openCharacterModal(char),
       id: char.id,
-    })),
-    {
-      nome: "Marcus Vale",
-      papel: "O Ocultista",
-      descricao: "Um estudioso das artes proibidas que carrega o peso de conhecimentos que nenhum mortal deveria possuir.",
-      onClick: undefined,
-      id: null,
-    },
-    {
-      nome: "Sophia Grimm",
-      papel: "A Médium",
-      descricao: "Amaldiçoada desde o nascimento com a capacidade de ver além do véu, ela caminha na linha tênue entre os mundos.",
-      onClick: undefined,
-      id: null,
-    },
-    {
-      nome: "Victor Stone",
-      papel: "O Caçador",
-      descricao: "Um guerreiro marcado por cicatrizes, tanto físicas quanto emocionais, que dedica sua vida a combater as criaturas da noite.",
-      onClick: undefined,
-      id: null,
-    }
+    }))
   ];
 
   return (
@@ -409,10 +388,13 @@ const Personagens = () => {
               </div>
 
               {/* Botões de seleção de ano */}
-              {selectedCharacter.character_years && selectedCharacter.character_years.length > 0 && (
+              {selectedCharacter.character_years && selectedCharacter.character_years.filter(y => 
+                y.image_url || Object.values(y.stats || {}).some(v => v && v > 0)
+              ).length > 0 && (
                 <>
                   <div className="flex justify-center gap-2 flex-wrap">
                     {selectedCharacter.character_years
+                      .filter(y => y.image_url || Object.values(y.stats || {}).some(v => v && v > 0))
                       .sort((a, b) => a.year - b.year)
                       .map((yearData) => (
                         <Button
