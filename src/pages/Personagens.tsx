@@ -201,7 +201,10 @@ const Personagens = () => {
 
   const openCharacterModal = (character: Character) => {
     setSelectedCharacter(character);
-    const years = character.character_years?.map(y => y.year).sort() || [];
+    const years = character.character_years
+      ?.filter(y => y.image_url || Object.values(y.stats || {}).some(v => v && v > 0))
+      .map(y => y.year)
+      .sort() || [];
     setSelectedCharacterYear(years[0] || 1990);
     setCharacterModalOpen(true);
   };

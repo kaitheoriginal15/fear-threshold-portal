@@ -1,14 +1,74 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FeatureCard from "@/components/FeatureCard";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import conceitosImage from "@/assets/conceitos.png";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import AddBookModal from "@/components/AddBookModal";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
+
+interface Book {
+  id: string;
+  name: string;
+  pdf_url: string;
+}
 
 const Livros = () => {
   const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
+  const [selectedPdfUrl, setSelectedPdfUrl] = useState("");
+  const [selectedBookName, setSelectedBookName] = useState("");
+  const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false);
+  const [books, setBooks] = useState<Book[]>([]);
+  const { isAdmin } = useAuth();
+
+  useEffect(() => {
+    loadBooks();
+  }, []);
+
+  const loadBooks = async () => {
+    const { data, error } = await supabase
+      .from("books")
+      .select("*")
+      .order("created_at", { ascending: true });
+
+    if (!error && data) {
+      setBooks(data);
+    }
+  };
+
+  const openPdfModal = (pdfUrl: string, bookName: string) => {
+    setSelectedPdfUrl(pdfUrl);
+    setSelectedBookName(bookName);
+    setIsPdfModalOpen(true);
+  };
+
+  const deleteBook = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!confirm("Tem certeza que deseja excluir este livro?")) {
+      return;
+    }
+
+    const { error } = await supabase.from("books").delete().eq("id", id);
+
+    if (error) {
+      toast({
+        title: "Erro ao excluir",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Livro excluído",
+        description: "O livro foi removido com sucesso.",
+      });
+      loadBooks();
+    }
+  };
 
   return (
     <div className="min-h-screen bg-dark relative overflow-hidden">
@@ -30,21 +90,53 @@ const Livros = () => {
             <span className="font-title">Voltar</span>
           </Link>
 
-          <div className="text-center mb-12 animate-fade-in">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-title font-bold text-primary mb-4 text-glow">
-              Livros
-            </h2>
-            <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto">
-              Descubra os segredos e conhecimentos ocultos
-            </p>
+          <div className="flex justify-between items-center mb-12">
+            <div className="text-center flex-1 animate-fade-in">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-title font-bold text-primary mb-4 text-glow">
+                Livros
+              </h2>
+              <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto">
+                Descubra os segredos e conhecimentos ocultos
+              </p>
+            </div>
+            {isAdmin && (
+              <button
+                onClick={() => setIsAddBookModalOpen(true)}
+                className="w-12 h-12 rounded-full bg-primary text-black flex items-center justify-center hover:bg-primary/80 transition-colors shadow-lg"
+                title="Adicionar Livro"
+              >
+                <Plus className="w-6 h-6" />
+              </button>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <FeatureCard
-              title="Livro dos Conceitos"
-              image={conceitosImage}
-              onClick={() => setIsPdfModalOpen(true)}
-            />
+            <div className="relative group">
+              <FeatureCard
+                title="Livro dos Conceitos"
+                image={conceitosImage}
+                onClick={() => openPdfModal("/Livro_dos_Conceitos.pdf", "Livro dos Conceitos")}
+              />
+            </div>
+
+            {books.map((book) => (
+              <div key={book.id} className="relative group">
+                {isAdmin && (
+                  <button
+                    onClick={(e) => deleteBook(book.id, e)}
+                    className="absolute top-4 right-4 z-10 p-2 bg-red-500/20 hover:bg-red-500/40 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                    title="Excluir livro"
+                  >
+                    <Trash2 className="w-5 h-5 text-red-400" />
+                  </button>
+                )}
+                <FeatureCard
+                  title={book.name}
+                  image={conceitosImage}
+                  onClick={() => openPdfModal(book.pdf_url, book.name)}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </main>
@@ -54,16 +146,22 @@ const Livros = () => {
       <Dialog open={isPdfModalOpen} onOpenChange={setIsPdfModalOpen}>
         <DialogContent className="max-w-[95vw] w-full h-[95vh] bg-dark-card border-2 border-primary/50 p-4">
           <DialogTitle className="text-2xl font-title text-primary text-center mb-2">
-            Livro dos Conceitos
+            {selectedBookName}
           </DialogTitle>
           <div className="w-full h-[calc(95vh-80px)]">
             <iframe 
-              src="/Livro_dos_Conceitos.pdf" 
+              src={selectedPdfUrl}
               className="w-full h-full rounded-lg"
             />
           </div>
         </DialogContent>
       </Dialog>
+
+      <AddBookModal
+        isOpen={isAddBookModalOpen}
+        onClose={() => setIsAddBookModalOpen(false)}
+        onSuccess={loadBooks}
+      />
     </div>
   );
 };
