@@ -1,14 +1,46 @@
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import alissonS1 from "@/assets/alisson_s1.jpg";
+import alissonS2 from "@/assets/alisson_s2.png";
+import alissonS3 from "@/assets/alisson_s3.png";
 
 const Personagens = () => {
+  const [isAlissonModalOpen, setIsAlissonModalOpen] = useState(false);
+  const [selectedYear, setSelectedYear] = useState<"1990" | "1991-1992" | "1995">("1990");
+
+  const getAlissonImage = () => {
+    switch (selectedYear) {
+      case "1990":
+        return alissonS1;
+      case "1991-1992":
+        return alissonS2;
+      case "1995":
+        return alissonS3;
+    }
+  };
+
+  const stats = [
+    { name: "Resistência", value: 6 },
+    { name: "Força", value: 7 },
+    { name: "Velocidade", value: 6 },
+    { name: "Energia", value: 10 },
+    { name: "Ilusão", value: 5 },
+    { name: "Inteligência", value: 3 },
+  ];
+
+  const totalStats = stats.reduce((sum, stat) => sum + stat.value, 0);
+
   const personagens = [
     {
-      nome: "Elena Darkmore",
-      papel: "A Investigadora",
-      descricao: "Uma detetive determinada que busca respostas sobre o desaparecimento de sua irmã, mesmo que isso signifique mergulhar nas trevas mais profundas."
+      nome: "Alisson Lachowski",
+      papel: "Agente Fear Threshold - Rank A",
+      descricao: "Um Agente do Fear Threshold de Rank A que busca respostas sobre seu passado e qual sua conexão com Malacharion e a Visiones Caelis.",
+      onClick: () => setIsAlissonModalOpen(true)
     },
     {
       nome: "Marcus Vale",
@@ -49,8 +81,9 @@ const Personagens = () => {
             {personagens.map((personagem, index) => (
               <div 
                 key={index}
-                className="bg-dark-card p-6 rounded-lg border-2 border-primary/30 hover:border-primary transition-all hover:scale-[1.02] hover:border-glow group"
+                className="bg-dark-card p-6 rounded-lg border-2 border-primary/30 hover:border-primary transition-all hover:scale-[1.02] hover:border-glow group cursor-pointer"
                 style={{ animationDelay: `${index * 0.1}s` }}
+                onClick={personagem.onClick}
               >
                 <h2 className="text-2xl md:text-3xl font-title font-semibold text-primary mb-2 group-hover:text-glow transition-all">
                   {personagem.nome}
@@ -68,6 +101,101 @@ const Personagens = () => {
       </main>
 
       <Footer />
+
+      <Dialog open={isAlissonModalOpen} onOpenChange={setIsAlissonModalOpen}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-dark-card border-2 border-primary/50">
+          <DialogTitle className="text-3xl font-title text-primary text-center mb-6">
+            Perfil do Personagem
+          </DialogTitle>
+          
+          <div className="space-y-6">
+            {/* Informações básicas */}
+            <div className="bg-dark/50 p-6 rounded-lg border border-primary/30">
+              <h3 className="text-2xl font-title text-primary mb-4">Alisson Lachowski</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-foreground/90">
+                <div>
+                  <span className="text-gold-light font-semibold">Nascimento:</span> 30/06/1971
+                </div>
+                <div>
+                  <span className="text-gold-light font-semibold">Gênero:</span> Masculino
+                </div>
+                <div>
+                  <span className="text-gold-light font-semibold">Rank:</span> A
+                </div>
+              </div>
+              <p className="mt-4 text-foreground/90 leading-relaxed">
+                Um Agente do Fear Threshold de Rank A que busca respostas sobre seu passado e qual sua conexão com Malacharion e a Visiones Caelis.
+              </p>
+            </div>
+
+            {/* Botões de seleção de ano */}
+            <div className="flex justify-center gap-4">
+              <Button
+                variant={selectedYear === "1990" ? "default" : "outline"}
+                onClick={() => setSelectedYear("1990")}
+                className="font-title"
+              >
+                1990
+              </Button>
+              <Button
+                variant={selectedYear === "1991-1992" ? "default" : "outline"}
+                onClick={() => setSelectedYear("1991-1992")}
+                className="font-title"
+              >
+                1991-1992
+              </Button>
+              <Button
+                variant={selectedYear === "1995" ? "default" : "outline"}
+                onClick={() => setSelectedYear("1995")}
+                className="font-title"
+              >
+                1995
+              </Button>
+            </div>
+
+            {/* Imagem e estatísticas */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Imagem */}
+              <div className="flex justify-center items-start">
+                <img
+                  src={getAlissonImage()}
+                  alt={`Alisson em ${selectedYear}`}
+                  className="rounded-lg border-2 border-primary/50 max-h-[500px] w-auto object-cover"
+                />
+              </div>
+
+              {/* Estatísticas */}
+              <div className="bg-dark/50 p-6 rounded-lg border border-primary/30">
+                <h4 className="text-xl font-title text-primary mb-4">Estatísticas</h4>
+                <div className="space-y-4">
+                  {stats.map((stat) => (
+                    <div key={stat.name}>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-gold-light font-semibold">{stat.name}</span>
+                        <span className="text-foreground/90">{stat.value}/10</span>
+                      </div>
+                      <div className="w-full bg-dark h-3 rounded-full border border-primary/30">
+                        <div
+                          className="bg-gradient-to-r from-primary to-gold-light h-full rounded-full transition-all"
+                          style={{ width: `${(stat.value / 10) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* Total */}
+                  <div className="pt-4 border-t border-primary/30 mt-6">
+                    <div className="flex justify-between">
+                      <span className="text-primary font-title font-bold text-lg">Total</span>
+                      <span className="text-primary font-bold text-lg">{totalStats}/60</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -9,7 +9,7 @@ const Navbar = () => {
           <img 
             src={logo} 
             alt="Fear Threshold Logo" 
-            className="h-12 w-auto drop-shadow-[0_0_10px_rgba(255,215,0,0.3)]"
+            className="h-12 w-auto"
           />
         </Link>
         
