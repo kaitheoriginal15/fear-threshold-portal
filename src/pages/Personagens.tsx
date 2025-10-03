@@ -1,17 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import alissonS1 from "@/assets/alisson_s1.jpg";
 import alissonS2 from "@/assets/alisson_s2.png";
 import alissonS3 from "@/assets/alisson_s3.png";
+import { useAuth } from "@/hooks/useAuth";
+import AddCharacterModal from "@/components/AddCharacterModal";
+import { supabase } from "@/integrations/supabase/client";
 
 const Personagens = () => {
   const [isAlissonModalOpen, setIsAlissonModalOpen] = useState(false);
   const [selectedYear, setSelectedYear] = useState<"1990" | "1991-1992" | "1995">("1990");
+  const [isAddCharacterModalOpen, setIsAddCharacterModalOpen] = useState(false);
+  const { isAdmin } = useAuth();
+  const [dbCharacters, setDbCharacters] = useState<any[]>([]);
 
   const getAlissonImage = () => {
     switch (selectedYear) {
@@ -69,6 +75,21 @@ const Personagens = () => {
 
   const totalStats = stats.reduce((sum, stat) => sum + stat.value, 0);
 
+  useEffect(() => {
+    loadCharacters();
+  }, []);
+
+  const loadCharacters = async () => {
+    const { data, error } = await supabase
+      .from('characters')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (!error && data) {
+      setDbCharacters(data);
+    }
+  };
+
   const personagens = [
     {
       nome: "Alisson Lachowski",
@@ -76,20 +97,29 @@ const Personagens = () => {
       descricao: "Um Agente do Fear Threshold de Rank A que busca respostas sobre seu passado e qual sua conexão com Malacharion e a Visiones Caelis.",
       onClick: () => setIsAlissonModalOpen(true)
     },
+    ...dbCharacters.map(char => ({
+      nome: char.name,
+      papel: `${char.rank ? `Rank ${char.rank}` : 'Personagem'}`,
+      descricao: char.description || '',
+      onClick: undefined
+    })),
     {
       nome: "Marcus Vale",
       papel: "O Ocultista",
-      descricao: "Um estudioso das artes proibidas que carrega o peso de conhecimentos que nenhum mortal deveria possuir."
+      descricao: "Um estudioso das artes proibidas que carrega o peso de conhecimentos que nenhum mortal deveria possuir.",
+      onClick: undefined
     },
     {
       nome: "Sophia Grimm",
       papel: "A Médium",
-      descricao: "Amaldiçoada desde o nascimento com a capacidade de ver além do véu, ela caminha na linha tênue entre os mundos."
+      descricao: "Amaldiçoada desde o nascimento com a capacidade de ver além do véu, ela caminha na linha tênue entre os mundos.",
+      onClick: undefined
     },
     {
       nome: "Victor Stone",
       papel: "O Caçador",
-      descricao: "Um guerreiro marcado por cicatrizes, tanto físicas quanto emocionais, que dedica sua vida a combater as criaturas da noite."
+      descricao: "Um guerreiro marcado por cicatrizes, tanto físicas quanto emocionais, que dedica sua vida a combater as criaturas da noite.",
+      onClick: undefined
     }
   ];
 
@@ -107,17 +137,28 @@ const Personagens = () => {
         </Link>
 
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-title font-bold text-primary mb-8 text-glow animate-fade-in">
-            Personagens
-          </h1>
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-title font-bold text-primary text-glow animate-fade-in">
+              Personagens
+            </h1>
+            {isAdmin && (
+              <button
+                onClick={() => setIsAddCharacterModalOpen(true)}
+                className="w-12 h-12 rounded-full bg-primary text-black flex items-center justify-center hover:bg-primary/80 transition-colors shadow-lg"
+                title="Adicionar Personagem"
+              >
+                <Plus className="w-6 h-6" />
+              </button>
+            )}
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
             {personagens.map((personagem, index) => (
               <div 
                 key={index}
-                className="bg-dark-card p-6 rounded-lg border-2 border-primary/30 hover:border-primary transition-colors group cursor-pointer"
+                className={`bg-dark-card p-6 rounded-lg border-2 border-primary/30 hover:border-primary transition-colors group ${personagem.onClick ? 'cursor-pointer' : ''}`}
                 style={{ animationDelay: `${index * 0.1}s` }}
-                onClick={personagem.onClick}
+                onClick={personagem.onClick || undefined}
               >
                 <h2 className="text-2xl md:text-3xl font-title font-semibold text-primary mb-2 group-hover:text-glow transition-all">
                   {personagem.nome}
@@ -233,6 +274,12 @@ const Personagens = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <AddCharacterModal
+        isOpen={isAddCharacterModalOpen}
+        onClose={() => setIsAddCharacterModalOpen(false)}
+        onSuccess={loadCharacters}
+      />
     </div>
   );
 };
