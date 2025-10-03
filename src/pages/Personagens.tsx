@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Pencil } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import alissonS2 from "@/assets/alisson_s2.png";
 import alissonS3 from "@/assets/alisson_s3.png";
 import { useAuth } from "@/hooks/useAuth";
 import AddCharacterModal from "@/components/AddCharacterModal";
+import EditCharacterModal from "@/components/EditCharacterModal";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
@@ -44,6 +45,8 @@ const Personagens = () => {
   const [isAlissonModalOpen, setIsAlissonModalOpen] = useState(false);
   const [selectedYear, setSelectedYear] = useState<"1990" | "1991-1992" | "1995">("1990");
   const [isAddCharacterModalOpen, setIsAddCharacterModalOpen] = useState(false);
+  const [isEditCharacterModalOpen, setIsEditCharacterModalOpen] = useState(false);
+  const [characterToEdit, setCharacterToEdit] = useState<Character | null>(null);
   const { isAdmin } = useAuth();
   const [dbCharacters, setDbCharacters] = useState<Character[]>([]);
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
@@ -155,6 +158,46 @@ const Personagens = () => {
     }
   };
 
+  const editCharacter = async (character: Character, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    // Fetch full character data with years
+    const { data, error } = await supabase
+      .from('characters')
+      .select(`
+        *,
+        character_years (
+          year,
+          image_url,
+          stats
+        )
+      `)
+      .eq('id', character.id)
+      .single();
+
+    if (error) {
+      toast({
+        title: 'Erro ao carregar dados',
+        description: error.message,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Transform data to match Character interface
+    const transformedData: Character = {
+      ...data,
+      character_years: data.character_years?.map((cy: any) => ({
+        year: cy.year,
+        image_url: cy.image_url,
+        stats: cy.stats as any
+      }))
+    };
+
+    setCharacterToEdit(transformedData);
+    setIsEditCharacterModalOpen(true);
+  };
+
   const openCharacterModal = (character: Character) => {
     setSelectedCharacter(character);
     const years = character.character_years?.map(y => y.year).sort() || [];
@@ -210,13 +253,22 @@ const Personagens = () => {
                 onClick={personagem.onClick || undefined}
               >
                 {isAdmin && personagem.id && (
-                  <button
-                    onClick={(e) => deleteCharacter(personagem.id!, e)}
-                    className="absolute top-4 right-4 p-2 bg-red-500/20 hover:bg-red-500/40 rounded-full transition-colors"
-                    title="Excluir personagem"
-                  >
-                    <Trash2 className="w-5 h-5 text-red-400" />
-                  </button>
+                  <div className="absolute top-4 right-4 flex gap-2">
+                    <button
+                      onClick={(e) => editCharacter(dbCharacters.find(c => c.id === personagem.id)!, e)}
+                      className="p-2 bg-primary/20 hover:bg-primary/40 rounded-full transition-colors"
+                      title="Editar personagem"
+                    >
+                      <Pencil className="w-5 h-5 text-primary" />
+                    </button>
+                    <button
+                      onClick={(e) => deleteCharacter(personagem.id!, e)}
+                      className="p-2 bg-red-500/20 hover:bg-red-500/40 rounded-full transition-colors"
+                      title="Excluir personagem"
+                    >
+                      <Trash2 className="w-5 h-5 text-red-400" />
+                    </button>
+                  </div>
                 )}
                 <h2 className="text-2xl md:text-3xl font-title font-semibold text-primary mb-2 group-hover:text-glow transition-all">
                   {personagem.nome}
@@ -337,6 +389,16 @@ const Personagens = () => {
         isOpen={isAddCharacterModalOpen}
         onClose={() => setIsAddCharacterModalOpen(false)}
         onSuccess={loadCharacters}
+      />
+
+      <EditCharacterModal
+        isOpen={isEditCharacterModalOpen}
+        onClose={() => {
+          setIsEditCharacterModalOpen(false);
+          setCharacterToEdit(null);
+        }}
+        onSuccess={loadCharacters}
+        character={characterToEdit}
       />
 
       {/* Modal for database characters */}
