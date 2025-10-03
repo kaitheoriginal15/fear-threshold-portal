@@ -58,9 +58,8 @@ const Livros = () => {
           </DialogTitle>
           <div className="flex-1 w-full h-full">
             <iframe 
-              src="https://drive.google.com/file/d/1i-zDzuORvsPIAO03kUOyQ1h01f3UWwjp/preview" 
+              src="/Livro_dos_Conceitos.pdf" 
               className="w-full h-full rounded-lg"
-              allow="autoplay"
             />
           </div>
         </DialogContent>

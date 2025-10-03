@@ -115,7 +115,7 @@ const Personagens = () => {
             {personagens.map((personagem, index) => (
               <div 
                 key={index}
-                className="bg-dark-card p-6 rounded-lg border-2 border-primary/30 hover:border-primary transition-all hover:scale-[1.02] hover:border-glow group cursor-pointer"
+                className="bg-dark-card p-6 rounded-lg border-2 border-primary/30 hover:border-primary transition-colors group cursor-pointer"
                 style={{ animationDelay: `${index * 0.1}s` }}
                 onClick={personagem.onClick}
               >
@@ -146,12 +146,15 @@ const Personagens = () => {
             {/* Informações básicas */}
             <div className="bg-dark/50 p-6 rounded-lg border border-primary/30">
               <h3 className="text-2xl font-title text-primary mb-4">Alisson Lachowski</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-foreground/90">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-foreground/90">
                 <div>
                   <span className="text-gold-light font-semibold">Nascimento:</span> 30/06/1971
                 </div>
                 <div>
                   <span className="text-gold-light font-semibold">Gênero:</span> Masculino
+                </div>
+                <div>
+                  <span className="text-gold-light font-semibold">Estado:</span> Vivo
                 </div>
                 <div>
                   <span className="text-gold-light font-semibold">Rank:</span> A
