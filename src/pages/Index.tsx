@@ -1,14 +1,11 @@
-import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import FeatureCard from "@/components/FeatureCard";
-import MapModal from "@/components/MapModal";
-import resumoArcosImage from "@/assets/resumo-arcos.png";
-import personagensImage from "@/assets/personagens.png";
-import mapaImage from "@/assets/mapa.png";
+import Footer from "@/components/Footer";
+import resumoArcosImage from "@/assets/resumo-arcos-new.png";
+import personagensImage from "@/assets/personagens-new.png";
+import livrosImage from "@/assets/livros.png";
 
 const Index = () => {
-  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
-
   return (
     <div className="min-h-screen bg-dark relative overflow-hidden">
       {/* Animated background effects */}
@@ -44,18 +41,15 @@ const Index = () => {
             />
             
             <FeatureCard
-              title="Mapa"
-              image={mapaImage}
-              onClick={() => setIsMapModalOpen(true)}
+              title="Livros"
+              image={livrosImage}
+              link="/livros"
             />
           </div>
         </div>
       </main>
 
-      <MapModal 
-        isOpen={isMapModalOpen} 
-        onClose={() => setIsMapModalOpen(false)} 
-      />
+      <Footer />
     </div>
   );
 };

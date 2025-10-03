@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -51,6 +52,8 @@ const ResumoArcos = () => {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };
