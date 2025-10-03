@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import FeatureCard from "@/components/FeatureCard";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import conceitosImage from "@/assets/conceitos.png";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import AddBookModal from "@/components/AddBookModal";
@@ -23,6 +23,7 @@ const Livros = () => {
   const [selectedBookName, setSelectedBookName] = useState("");
   const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false);
   const [books, setBooks] = useState<Book[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const { isAdmin } = useAuth();
 
   useEffect(() => {
@@ -110,6 +111,18 @@ const Livros = () => {
             )}
           </div>
 
+          {/* Search Bar */}
+          <div className="relative mb-8">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-primary/60 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Buscar livro por nome..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 bg-dark-card border-2 border-primary/30 rounded-lg text-foreground placeholder:text-foreground/50 focus:outline-none focus:border-primary transition-colors"
+            />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="relative group">
               <FeatureCard
@@ -119,7 +132,9 @@ const Livros = () => {
               />
             </div>
 
-            {books.map((book) => (
+            {books
+              .filter(book => book.name.toLowerCase().includes(searchTerm.toLowerCase()))
+              .map((book) => (
               <div key={book.id} className="relative group">
                 {isAdmin && (
                   <button
