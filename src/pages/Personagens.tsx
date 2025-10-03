@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ArrowLeft, Plus, Trash2, Pencil } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Pencil, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -52,6 +52,7 @@ const Personagens = () => {
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
   const [characterModalOpen, setCharacterModalOpen] = useState(false);
   const [selectedCharacterYear, setSelectedCharacterYear] = useState<number>(1990);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const getAlissonImage = () => {
     switch (selectedYear) {
@@ -124,7 +125,7 @@ const Personagens = () => {
           stats
         )
       `)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: true });
     
     if (!error && data) {
       setDbCharacters(data as Character[]);
@@ -205,15 +206,17 @@ const Personagens = () => {
     setCharacterModalOpen(true);
   };
 
-  const personagens = [
-    ...dbCharacters.map(char => ({
+  const personagens = dbCharacters
+    .filter(char => 
+      char.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .map(char => ({
       nome: char.name,
       papel: `${char.rank ? `Rank ${char.rank}` : 'Personagem'}`,
-      descricao: char.description || '',
+      imagem: char.character_years?.sort((a, b) => a.year - b.year)[0]?.image_url || '',
       onClick: () => openCharacterModal(char),
       id: char.id,
-    }))
-  ];
+    }));
 
   return (
     <div className="min-h-screen bg-dark">
@@ -243,42 +246,66 @@ const Personagens = () => {
               </button>
             )}
           </div>
+
+          {/* Search Bar */}
+          <div className="relative mb-8">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-primary/60 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Buscar personagem por nome..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 bg-dark-card border-2 border-primary/30 rounded-lg text-foreground placeholder:text-foreground/50 focus:outline-none focus:border-primary transition-colors"
+            />
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
             {personagens.map((personagem, index) => (
               <div 
                 key={index}
-                className={`bg-dark-card p-6 rounded-lg border-2 border-primary/30 hover:border-primary transition-colors group relative ${personagem.onClick ? 'cursor-pointer' : ''}`}
+                className={`bg-dark-card rounded-lg border-2 border-primary/30 hover:border-primary transition-colors group relative overflow-hidden ${personagem.onClick ? 'cursor-pointer' : ''}`}
                 style={{ animationDelay: `${index * 0.1}s` }}
                 onClick={personagem.onClick || undefined}
               >
                 {isAdmin && personagem.id && (
-                  <div className="absolute top-4 right-4 flex gap-2">
+                  <div className="absolute top-4 right-4 flex gap-2 z-10">
                     <button
                       onClick={(e) => editCharacter(dbCharacters.find(c => c.id === personagem.id)!, e)}
-                      className="p-2 bg-primary/20 hover:bg-primary/40 rounded-full transition-colors"
+                      className="p-2 bg-primary/20 hover:bg-primary/40 rounded-full transition-colors backdrop-blur-sm"
                       title="Editar personagem"
                     >
                       <Pencil className="w-5 h-5 text-primary" />
                     </button>
                     <button
                       onClick={(e) => deleteCharacter(personagem.id!, e)}
-                      className="p-2 bg-red-500/20 hover:bg-red-500/40 rounded-full transition-colors"
+                      className="p-2 bg-red-500/20 hover:bg-red-500/40 rounded-full transition-colors backdrop-blur-sm"
                       title="Excluir personagem"
                     >
                       <Trash2 className="w-5 h-5 text-red-400" />
                     </button>
                   </div>
                 )}
-                <h2 className="text-2xl md:text-3xl font-title font-semibold text-primary mb-2 group-hover:text-glow transition-all">
-                  {personagem.nome}
-                </h2>
-                <p className="text-gold-light text-sm md:text-base font-title mb-3">
-                  {personagem.papel}
-                </p>
-                <p className="text-foreground/90 leading-relaxed">
-                  {personagem.descricao}
-                </p>
+                
+                {/* Image Container */}
+                {personagem.imagem && (
+                  <div className="w-full h-64 overflow-hidden">
+                    <img
+                      src={personagem.imagem}
+                      alt={personagem.nome}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+                
+                {/* Content */}
+                <div className="p-6">
+                  <h2 className="text-2xl md:text-3xl font-title font-semibold text-primary mb-2 group-hover:text-glow transition-all">
+                    {personagem.nome}
+                  </h2>
+                  <p className="text-gold-light text-sm md:text-base font-title">
+                    {personagem.papel}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
