@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import ResumoArcos from "./pages/ResumoArcos";
 import Personagens from "./pages/Personagens";
 import Livros from "./pages/Livros";
+import Bestiario from "./pages/Bestiario";
+import TierList from "./pages/TierList";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +24,8 @@ const App = () => (
           <Route path="/resumo-arcos" element={<ResumoArcos />} />
           <Route path="/personagens" element={<Personagens />} />
           <Route path="/livros" element={<Livros />} />
+          <Route path="/bestiario" element={<Bestiario />} />
+          <Route path="/tier-list" element={<TierList />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

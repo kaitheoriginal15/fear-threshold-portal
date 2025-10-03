@@ -72,7 +72,7 @@ const Livros = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark relative overflow-hidden">
+    <div className="min-h-screen bg-dark relative overflow-hidden flex flex-col">
       {/* Animated background effects */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[100px] animate-glow-pulse" />
@@ -81,7 +81,7 @@ const Livros = () => {
 
       <Navbar />
       
-      <main className="container mx-auto px-4 pt-32 pb-16 relative z-10">
+      <main className="container mx-auto px-4 pt-32 pb-16 relative z-10 flex-grow">
         <div className="max-w-7xl mx-auto">
           <Link 
             to="/" 
@@ -124,14 +124,6 @@ const Livros = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="relative group">
-              <FeatureCard
-                title="Livro dos Conceitos"
-                image={conceitosImage}
-                onClick={() => openPdfModal("/Livro_dos_Conceitos.pdf", "Livro dos Conceitos")}
-              />
-            </div>
-
             {books
               .filter(book => book.name.toLowerCase().includes(searchTerm.toLowerCase()))
               .map((book) => (

@@ -222,10 +222,10 @@ const Personagens = () => {
     }));
 
   return (
-    <div className="min-h-screen bg-dark">
+    <div className="min-h-screen bg-dark flex flex-col">
       <Navbar />
       
-      <main className="container mx-auto px-4 pt-32 pb-16">
+      <main className="container mx-auto px-4 pt-32 pb-16 flex-grow">
         <Link 
           to="/" 
           className="inline-flex items-center gap-2 text-primary hover:text-gold-light transition-colors mb-8 group"
