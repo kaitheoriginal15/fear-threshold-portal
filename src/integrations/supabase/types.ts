@@ -14,6 +14,68 @@ export type Database = {
   }
   public: {
     Tables: {
+      beast_stats: {
+        Row: {
+          beast_id: string
+          id: string
+          image_url: string | null
+          stats: Json | null
+        }
+        Insert: {
+          beast_id: string
+          id?: string
+          image_url?: string | null
+          stats?: Json | null
+        }
+        Update: {
+          beast_id?: string
+          id?: string
+          image_url?: string | null
+          stats?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "beast_stats_beast_id_fkey"
+            columns: ["beast_id"]
+            isOneToOne: true
+            referencedRelation: "beasts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      beasts: {
+        Row: {
+          created_at: string
+          description: string | null
+          gender: string | null
+          id: string
+          name: string
+          sighting: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          gender?: string | null
+          id?: string
+          name: string
+          sighting?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          gender?: string | null
+          id?: string
+          name?: string
+          sighting?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       books: {
         Row: {
           created_at: string
