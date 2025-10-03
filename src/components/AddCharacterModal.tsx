@@ -18,11 +18,15 @@ interface YearData {
   year: number;
   imageUrl: string;
   stats: {
+    resistencia: number;
     forca: number;
     velocidade: number;
-    resistencia: number;
+    controleEnergia: number;
+    ilusao: number;
     inteligencia: number;
-    habilidade: number;
+    habilidadeGeral: number;
+    conhecimento: number;
+    arsenal: number;
   };
 }
 
@@ -35,13 +39,15 @@ const AddCharacterModal = ({ isOpen, onClose, onSuccess }: AddCharacterModalProp
   const [rank, setRank] = useState('');
   const [description, setDescription] = useState('');
   
+  const defaultStats = { resistencia: 0, forca: 0, velocidade: 0, controleEnergia: 0, ilusao: 0, inteligencia: 0, habilidadeGeral: 0, conhecimento: 0, arsenal: 0 };
+  
   const [yearsData, setYearsData] = useState<YearData[]>([
-    { year: 1990, imageUrl: '', stats: { forca: 0, velocidade: 0, resistencia: 0, inteligencia: 0, habilidade: 0 } },
-    { year: 1991, imageUrl: '', stats: { forca: 0, velocidade: 0, resistencia: 0, inteligencia: 0, habilidade: 0 } },
-    { year: 1992, imageUrl: '', stats: { forca: 0, velocidade: 0, resistencia: 0, inteligencia: 0, habilidade: 0 } },
-    { year: 1993, imageUrl: '', stats: { forca: 0, velocidade: 0, resistencia: 0, inteligencia: 0, habilidade: 0 } },
-    { year: 1994, imageUrl: '', stats: { forca: 0, velocidade: 0, resistencia: 0, inteligencia: 0, habilidade: 0 } },
-    { year: 1995, imageUrl: '', stats: { forca: 0, velocidade: 0, resistencia: 0, inteligencia: 0, habilidade: 0 } },
+    { year: 1990, imageUrl: '', stats: { ...defaultStats } },
+    { year: 1991, imageUrl: '', stats: { ...defaultStats } },
+    { year: 1992, imageUrl: '', stats: { ...defaultStats } },
+    { year: 1993, imageUrl: '', stats: { ...defaultStats } },
+    { year: 1994, imageUrl: '', stats: { ...defaultStats } },
+    { year: 1995, imageUrl: '', stats: { ...defaultStats } },
   ]);
 
   const updateYearData = (yearIndex: number, field: string, value: string | number) => {
@@ -119,12 +125,12 @@ const AddCharacterModal = ({ isOpen, onClose, onSuccess }: AddCharacterModalProp
     setRank('');
     setDescription('');
     setYearsData([
-      { year: 1990, imageUrl: '', stats: { forca: 0, velocidade: 0, resistencia: 0, inteligencia: 0, habilidade: 0 } },
-      { year: 1991, imageUrl: '', stats: { forca: 0, velocidade: 0, resistencia: 0, inteligencia: 0, habilidade: 0 } },
-      { year: 1992, imageUrl: '', stats: { forca: 0, velocidade: 0, resistencia: 0, inteligencia: 0, habilidade: 0 } },
-      { year: 1993, imageUrl: '', stats: { forca: 0, velocidade: 0, resistencia: 0, inteligencia: 0, habilidade: 0 } },
-      { year: 1994, imageUrl: '', stats: { forca: 0, velocidade: 0, resistencia: 0, inteligencia: 0, habilidade: 0 } },
-      { year: 1995, imageUrl: '', stats: { forca: 0, velocidade: 0, resistencia: 0, inteligencia: 0, habilidade: 0 } },
+      { year: 1990, imageUrl: '', stats: { ...defaultStats } },
+      { year: 1991, imageUrl: '', stats: { ...defaultStats } },
+      { year: 1992, imageUrl: '', stats: { ...defaultStats } },
+      { year: 1993, imageUrl: '', stats: { ...defaultStats } },
+      { year: 1994, imageUrl: '', stats: { ...defaultStats } },
+      { year: 1995, imageUrl: '', stats: { ...defaultStats } },
     ]);
   };
 
@@ -215,16 +221,26 @@ const AddCharacterModal = ({ isOpen, onClose, onSuccess }: AddCharacterModalProp
                       placeholder="https://..."
                     />
                   </div>
-                  <div className="grid grid-cols-5 gap-4">
-                    {Object.keys(yearData.stats).map((stat) => (
-                      <div key={stat} className="space-y-2">
-                        <Label className="text-white capitalize">{stat}</Label>
+                  <div className="grid grid-cols-3 gap-4">
+                    {[
+                      { key: 'resistencia', label: 'Resistência' },
+                      { key: 'forca', label: 'Força' },
+                      { key: 'velocidade', label: 'Velocidade' },
+                      { key: 'controleEnergia', label: 'Controle de Energia' },
+                      { key: 'ilusao', label: 'Ilusão' },
+                      { key: 'inteligencia', label: 'Inteligência' },
+                      { key: 'habilidadeGeral', label: 'Habilidade Geral' },
+                      { key: 'conhecimento', label: 'Conhecimento' },
+                      { key: 'arsenal', label: 'Arsenal' },
+                    ].map(({ key, label }) => (
+                      <div key={key} className="space-y-2">
+                        <Label className="text-white">{label}</Label>
                         <Input
                           type="number"
                           min="0"
-                          max="100"
-                          value={yearData.stats[stat as keyof typeof yearData.stats]}
-                          onChange={(e) => updateYearData(index, stat, e.target.value)}
+                          max="10"
+                          value={yearData.stats[key as keyof typeof yearData.stats]}
+                          onChange={(e) => updateYearData(index, key, e.target.value)}
                           className="bg-black/50 border-primary/30 text-white"
                         />
                       </div>
