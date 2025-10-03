@@ -234,17 +234,20 @@ const Bestiario = () => {
                         src={selectedBeast.beast_stats.image_url}
                         alt={selectedBeast.name}
                         className="rounded-lg border-2 border-primary/50 max-h-[500px] w-auto object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
                       />
                     </div>
                   )}
 
                   {/* Estatísticas */}
-                  {selectedBeast.beast_stats.stats && (
+                  {selectedBeast.beast_stats.stats && Object.keys(selectedBeast.beast_stats.stats).length > 0 && (
                     <div className="bg-dark/50 p-6 rounded-lg border border-primary/30">
                       <h4 className="text-xl font-title text-primary mb-4">Estatísticas</h4>
                       <div className="space-y-4">
                         {Object.entries(selectedBeast.beast_stats.stats)
-                          .filter(([_, value]) => value !== undefined && value !== null)
+                          .filter(([_, value]) => value !== undefined && value !== null && value !== 0)
                           .map(([key, value]) => {
                             const labels: Record<string, string> = {
                               resistencia: 'Resistência',
@@ -269,14 +272,14 @@ const Bestiario = () => {
                               </div>
                             );
                           })}
-                        
+
                         {/* Total */}
                         <div className="pt-4 border-t border-primary/30 mt-6">
                           <div className="flex justify-between">
                             <span className="text-primary font-title font-bold text-lg">Total</span>
                             <span className="text-primary font-bold text-lg">
                               {Object.values(selectedBeast.beast_stats.stats)
-                                .filter(v => v !== undefined && v !== null)
+                                .filter(v => v !== undefined && v !== null && v !== 0)
                                 .reduce((sum, v) => sum + (v as number), 0)}/60
                             </span>
                           </div>
