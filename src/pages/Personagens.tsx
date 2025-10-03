@@ -263,22 +263,22 @@ const Personagens = () => {
             {personagens.map((personagem, index) => (
               <div 
                 key={index}
-                className={`bg-dark-card rounded-lg border-2 border-primary/30 hover:border-primary transition-colors group relative overflow-hidden ${personagem.onClick ? 'cursor-pointer' : ''}`}
+                className={`bg-dark-card p-6 rounded-lg border-2 border-primary/30 hover:border-primary transition-colors group relative ${personagem.onClick ? 'cursor-pointer' : ''}`}
                 style={{ animationDelay: `${index * 0.1}s` }}
                 onClick={personagem.onClick || undefined}
               >
                 {isAdmin && personagem.id && (
-                  <div className="absolute top-4 right-4 flex gap-2 z-10">
+                  <div className="absolute top-4 right-4 flex gap-2">
                     <button
                       onClick={(e) => editCharacter(dbCharacters.find(c => c.id === personagem.id)!, e)}
-                      className="p-2 bg-primary/20 hover:bg-primary/40 rounded-full transition-colors backdrop-blur-sm"
+                      className="p-2 bg-primary/20 hover:bg-primary/40 rounded-full transition-colors"
                       title="Editar personagem"
                     >
                       <Pencil className="w-5 h-5 text-primary" />
                     </button>
                     <button
                       onClick={(e) => deleteCharacter(personagem.id!, e)}
-                      className="p-2 bg-red-500/20 hover:bg-red-500/40 rounded-full transition-colors backdrop-blur-sm"
+                      className="p-2 bg-red-500/20 hover:bg-red-500/40 rounded-full transition-colors"
                       title="Excluir personagem"
                     >
                       <Trash2 className="w-5 h-5 text-red-400" />
@@ -286,26 +286,12 @@ const Personagens = () => {
                   </div>
                 )}
                 
-                {/* Image Container */}
-                {personagem.imagem && (
-                  <div className="w-full h-64 overflow-hidden">
-                    <img
-                      src={personagem.imagem}
-                      alt={personagem.nome}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                )}
-                
-                {/* Content */}
-                <div className="p-6">
-                  <h2 className="text-2xl md:text-3xl font-title font-semibold text-primary mb-2 group-hover:text-glow transition-all">
-                    {personagem.nome}
-                  </h2>
-                  <p className="text-gold-light text-sm md:text-base font-title">
-                    {personagem.papel}
-                  </p>
-                </div>
+                <h2 className="text-2xl md:text-3xl font-title font-semibold text-primary mb-2 group-hover:text-glow transition-all">
+                  {personagem.nome}
+                </h2>
+                <p className="text-gold-light text-sm md:text-base font-title">
+                  {personagem.papel}
+                </p>
               </div>
             ))}
           </div>
