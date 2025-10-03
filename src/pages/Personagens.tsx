@@ -24,17 +24,48 @@ const Personagens = () => {
     }
   };
 
-  const stats = [
-    { name: "Resistência", value: 6 },
-    { name: "Força", value: 7 },
-    { name: "Velocidade", value: 6 },
-    { name: "Controle de Energia", value: 7 },
-    { name: "Ilusão", value: 5 },
-    { name: "Inteligência", value: 3 },
-    { name: "Habilidade Geral", value: 5 },
-    { name: "Conhecimento", value: 4 },
-    { name: "Arsenal", value: 4 },
-  ];
+  const getAlissonStats = () => {
+    switch (selectedYear) {
+      case "1990":
+        return [
+          { name: "Resistência", value: 3 },
+          { name: "Força", value: 5 },
+          { name: "Velocidade", value: 3 },
+          { name: "Controle de Energia", value: 1 },
+          { name: "Ilusão", value: 0 },
+          { name: "Inteligência", value: 3 },
+          { name: "Habilidade Geral", value: 2 },
+          { name: "Conhecimento", value: 0 },
+          { name: "Arsenal", value: 0 },
+        ];
+      case "1991-1992":
+        return [
+          { name: "Resistência", value: 5 },
+          { name: "Força", value: 7 },
+          { name: "Velocidade", value: 5 },
+          { name: "Controle de Energia", value: 5 },
+          { name: "Ilusão", value: 4 },
+          { name: "Inteligência", value: 3 },
+          { name: "Habilidade Geral", value: 4 },
+          { name: "Conhecimento", value: 2 },
+          { name: "Arsenal", value: 3 },
+        ];
+      case "1995":
+        return [
+          { name: "Resistência", value: 6 },
+          { name: "Força", value: 7 },
+          { name: "Velocidade", value: 6 },
+          { name: "Controle de Energia", value: 7 },
+          { name: "Ilusão", value: 5 },
+          { name: "Inteligência", value: 3 },
+          { name: "Habilidade Geral", value: 5 },
+          { name: "Conhecimento", value: 4 },
+          { name: "Arsenal", value: 4 },
+        ];
+    }
+  };
+
+  const stats = getAlissonStats();
 
   const totalStats = stats.reduce((sum, stat) => sum + stat.value, 0);
 
