@@ -163,13 +163,6 @@ const Personagens = () => {
   };
 
   const personagens = [
-    {
-      nome: "Alisson Lachowski",
-      papel: "Agente Fear Threshold - Rank A",
-      descricao: "Um Agente do Fear Threshold de Rank A que busca respostas sobre seu passado e qual sua conexão com Malacharion e a Visiones Caelis.",
-      onClick: () => setIsAlissonModalOpen(true),
-      id: null,
-    },
     ...dbCharacters.map(char => ({
       nome: char.name,
       papel: `${char.rank ? `Rank ${char.rank}` : 'Personagem'}`,
