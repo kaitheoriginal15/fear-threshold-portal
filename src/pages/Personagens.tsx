@@ -28,9 +28,12 @@ const Personagens = () => {
     { name: "Resistência", value: 6 },
     { name: "Força", value: 7 },
     { name: "Velocidade", value: 6 },
-    { name: "Energia", value: 10 },
+    { name: "Controle de Energia", value: 7 },
     { name: "Ilusão", value: 5 },
     { name: "Inteligência", value: 3 },
+    { name: "Habilidade Geral", value: 5 },
+    { name: "Conhecimento", value: 4 },
+    { name: "Arsenal", value: 4 },
   ];
 
   const totalStats = stats.reduce((sum, stat) => sum + stat.value, 0);
@@ -187,7 +190,7 @@ const Personagens = () => {
                   <div className="pt-4 border-t border-primary/30 mt-6">
                     <div className="flex justify-between">
                       <span className="text-primary font-title font-bold text-lg">Total</span>
-                      <span className="text-primary font-bold text-lg">{totalStats}/60</span>
+                      <span className="text-primary font-bold text-lg">{totalStats}/90</span>
                     </div>
                   </div>
                 </div>
