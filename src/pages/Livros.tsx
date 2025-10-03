@@ -52,11 +52,11 @@ const Livros = () => {
       <Footer />
 
       <Dialog open={isPdfModalOpen} onOpenChange={setIsPdfModalOpen}>
-        <DialogContent className="max-w-4xl h-[90vh] bg-dark-card border-2 border-primary/50">
-          <DialogTitle className="text-2xl font-title text-primary text-center">
+        <DialogContent className="max-w-[95vw] w-full h-[95vh] bg-dark-card border-2 border-primary/50 p-4">
+          <DialogTitle className="text-2xl font-title text-primary text-center mb-2">
             Livro dos Conceitos
           </DialogTitle>
-          <div className="flex-1 w-full h-full">
+          <div className="w-full h-[calc(95vh-80px)]">
             <iframe 
               src="/Livro_dos_Conceitos.pdf" 
               className="w-full h-full rounded-lg"
