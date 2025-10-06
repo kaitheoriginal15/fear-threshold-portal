@@ -50,6 +50,7 @@ export type Database = {
           gender: string | null
           id: string
           name: string
+          rank: string | null
           sighting: string | null
           status: string | null
           updated_at: string
@@ -60,6 +61,7 @@ export type Database = {
           gender?: string | null
           id?: string
           name: string
+          rank?: string | null
           sighting?: string | null
           status?: string | null
           updated_at?: string
@@ -70,6 +72,7 @@ export type Database = {
           gender?: string | null
           id?: string
           name?: string
+          rank?: string | null
           sighting?: string | null
           status?: string | null
           updated_at?: string

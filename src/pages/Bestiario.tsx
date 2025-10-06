@@ -23,7 +23,7 @@ interface Beast {
   name: string;
   sighting?: string;
   status?: string;
-  gender?: string;
+  rank?: string;
   description?: string;
   beast_stats?: {
     image_url: string;
@@ -206,9 +206,9 @@ const Bestiario = () => {
                       <span className="text-gold-light font-semibold">Avistamento:</span> {selectedBeast.sighting}
                     </div>
                   )}
-                  {selectedBeast.gender && (
+                  {selectedBeast.rank && (
                     <div>
-                      <span className="text-gold-light font-semibold">Gênero:</span> {selectedBeast.gender}
+                      <span className="text-gold-light font-semibold">Rank:</span> {selectedBeast.rank}
                     </div>
                   )}
                   {selectedBeast.status && (

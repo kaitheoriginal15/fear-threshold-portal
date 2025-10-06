@@ -18,7 +18,7 @@ const AddBeastModal = ({ isOpen, onClose, onSuccess }: AddBeastModalProps) => {
   const [name, setName] = useState('');
   const [sighting, setSighting] = useState('');
   const [status, setStatus] = useState('');
-  const [gender, setGender] = useState('');
+  const [rank, setRank] = useState('');
   const [description, setDescription] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   
@@ -49,7 +49,7 @@ const AddBeastModal = ({ isOpen, onClose, onSuccess }: AddBeastModalProps) => {
           name,
           sighting,
           status,
-          gender,
+          rank,
           description,
         })
         .select()
@@ -113,7 +113,7 @@ const AddBeastModal = ({ isOpen, onClose, onSuccess }: AddBeastModalProps) => {
     setName('');
     setSighting('');
     setStatus('');
-    setGender('');
+    setRank('');
     setDescription('');
     setImageFile(null);
     setStats({
@@ -163,11 +163,11 @@ const AddBeastModal = ({ isOpen, onClose, onSuccess }: AddBeastModalProps) => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="gender" className="text-white">Gênero</Label>
+              <Label htmlFor="rank" className="text-white">Rank</Label>
               <Input
-                id="gender"
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
+                id="rank"
+                value={rank}
+                onChange={(e) => setRank(e.target.value)}
                 className="bg-black/50 border-primary/30 text-white"
               />
             </div>
