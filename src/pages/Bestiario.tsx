@@ -55,6 +55,9 @@ const Bestiario = () => {
       `)
       .order('created_at', { ascending: true });
     
+    console.log('Beasts loaded:', data);
+    console.log('Error:', error);
+    
     if (!error && data) {
       const transformedData = data.map(beast => ({
         ...beast,
@@ -62,6 +65,7 @@ const Bestiario = () => {
           ? beast.beast_stats[0] 
           : undefined
       }));
+      console.log('Transformed beasts:', transformedData);
       setBeasts(transformedData as Beast[]);
     }
   };
@@ -94,6 +98,8 @@ const Bestiario = () => {
   };
 
   const openBeastModal = (beast: Beast) => {
+    console.log('Opening beast modal:', beast);
+    console.log('Beast stats:', beast.beast_stats);
     setSelectedBeast(beast);
     setBeastModalOpen(true);
   };
