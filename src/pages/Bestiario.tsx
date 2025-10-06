@@ -231,70 +231,68 @@ const Bestiario = () => {
               </div>
 
               {/* Imagem e estatísticas */}
-              {selectedBeast.beast_stats && (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Imagem */}
-                  {selectedBeast.beast_stats.image_url && (
-                    <div className="flex justify-center items-start">
-                      <img
-                        src={selectedBeast.beast_stats.image_url}
-                        alt={selectedBeast.name}
-                        className="rounded-lg border-2 border-primary/50 max-h-[500px] w-auto object-cover"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                        }}
-                      />
-                    </div>
-                  )}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Imagem */}
+                {selectedBeast.beast_stats?.image_url && (
+                  <div className="flex justify-center items-start">
+                    <img
+                      src={selectedBeast.beast_stats.image_url}
+                      alt={selectedBeast.name}
+                      className="rounded-lg border-2 border-primary/50 max-h-[500px] w-auto object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
 
-                  {/* Estatísticas */}
-                  {selectedBeast.beast_stats.stats && Object.keys(selectedBeast.beast_stats.stats).length > 0 && (
-                    <div className="bg-dark/50 p-6 rounded-lg border border-primary/30">
-                      <h4 className="text-xl font-title text-primary mb-4">Estatísticas</h4>
-                      <div className="space-y-4">
-                        {Object.entries(selectedBeast.beast_stats.stats)
-                          .filter(([_, value]) => value !== undefined && value !== null && value !== 0)
-                          .map(([key, value]) => {
-                            const labels: Record<string, string> = {
-                              resistencia: 'Resistência',
-                              forca: 'Força',
-                              velocidade: 'Velocidade',
-                              ilusao: 'Ilusão',
-                              inteligencia: 'Inteligência',
-                              habilidadeGeral: 'Habilidade Geral',
-                            };
-                            return (
-                              <div key={key}>
-                                <div className="flex justify-between mb-1">
-                                  <span className="text-gold-light font-semibold">{labels[key] || key}</span>
-                                  <span className="text-foreground/90">{value}/10</span>
-                                </div>
-                                <div className="w-full bg-dark h-3 rounded-full border border-primary/30">
-                                  <div
-                                    className="bg-gradient-to-r from-primary to-gold-light h-full rounded-full transition-all"
-                                    style={{ width: `${((value as number) / 10) * 100}%` }}
-                                  />
-                                </div>
+                {/* Estatísticas */}
+                {selectedBeast.beast_stats?.stats && Object.keys(selectedBeast.beast_stats.stats).length > 0 && (
+                  <div className="bg-dark/50 p-6 rounded-lg border border-primary/30">
+                    <h4 className="text-xl font-title text-primary mb-4">Estatísticas</h4>
+                    <div className="space-y-4">
+                      {Object.entries(selectedBeast.beast_stats.stats)
+                        .filter(([_, value]) => value !== undefined && value !== null && value !== 0)
+                        .map(([key, value]) => {
+                          const labels: Record<string, string> = {
+                            resistencia: 'Resistência',
+                            forca: 'Força',
+                            velocidade: 'Velocidade',
+                            ilusao: 'Ilusão',
+                            inteligencia: 'Inteligência',
+                            habilidadeGeral: 'Habilidade Geral',
+                          };
+                          return (
+                            <div key={key}>
+                              <div className="flex justify-between mb-1">
+                                <span className="text-gold-light font-semibold">{labels[key] || key}</span>
+                                <span className="text-foreground/90">{value}/10</span>
                               </div>
-                            );
-                          })}
+                              <div className="w-full bg-dark h-3 rounded-full border border-primary/30">
+                                <div
+                                  className="bg-gradient-to-r from-primary to-gold-light h-full rounded-full transition-all"
+                                  style={{ width: `${((value as number) / 10) * 100}%` }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
 
-                        {/* Total */}
-                        <div className="pt-4 border-t border-primary/30 mt-6">
-                          <div className="flex justify-between">
-                            <span className="text-primary font-title font-bold text-lg">Total</span>
-                            <span className="text-primary font-bold text-lg">
-                              {Object.values(selectedBeast.beast_stats.stats)
-                                .filter(v => v !== undefined && v !== null && v !== 0)
-                                .reduce((sum, v) => sum + (v as number), 0)}/60
-                            </span>
-                          </div>
+                      {/* Total */}
+                      <div className="pt-4 border-t border-primary/30 mt-6">
+                        <div className="flex justify-between">
+                          <span className="text-primary font-title font-bold text-lg">Total</span>
+                          <span className="text-primary font-bold text-lg">
+                            {Object.values(selectedBeast.beast_stats.stats)
+                              .filter(v => v !== undefined && v !== null && v !== 0)
+                              .reduce((sum, v) => sum + (v as number), 0)}/60
+                          </span>
                         </div>
                       </div>
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </DialogContent>
