@@ -48,24 +48,20 @@ const Bestiario = () => {
       .from('beasts')
       .select(`
         *,
-        beast_stats (
+        beast_stats!inner (
           image_url,
           stats
         )
       `)
       .order('created_at', { ascending: true });
     
-    console.log('Beasts loaded:', data);
-    console.log('Error:', error);
-    
     if (!error && data) {
-      const transformedData = data.map(beast => ({
+      const transformedData = data.map((beast: any) => ({
         ...beast,
         beast_stats: Array.isArray(beast.beast_stats) && beast.beast_stats.length > 0 
           ? beast.beast_stats[0] 
-          : undefined
+          : beast.beast_stats
       }));
-      console.log('Transformed beasts:', transformedData);
       setBeasts(transformedData as Beast[]);
     }
   };
@@ -98,8 +94,6 @@ const Bestiario = () => {
   };
 
   const openBeastModal = (beast: Beast) => {
-    console.log('Opening beast modal:', beast);
-    console.log('Beast stats:', beast.beast_stats);
     setSelectedBeast(beast);
     setBeastModalOpen(true);
   };
