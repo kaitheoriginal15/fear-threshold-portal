@@ -218,11 +218,9 @@ const Bestiario = () => {
                 <h2 className="text-2xl md:text-3xl font-title font-semibold text-primary mb-2 group-hover:text-glow transition-all">
                   {beast.name}
                 </h2>
-                {beast.rank && (
-                  <p className="text-gold-light text-sm md:text-base font-title">
-                    Rank {beast.rank}
-                  </p>
-                )}
+                <p className="text-gold-light text-sm md:text-base font-title">
+                  {beast.rank ? `Rank ${beast.rank}` : 'Sem Rank'}
+                </p>
               </div>
             ))}
           </div>

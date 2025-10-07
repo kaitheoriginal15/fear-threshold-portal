@@ -215,7 +215,7 @@ const Personagens = () => {
     )
     .map(char => ({
       nome: char.name,
-      papel: `${char.rank ? `Rank ${char.rank}` : 'Personagem'}`,
+      papel: `${char.rank ? `Rank ${char.rank}` : 'Sem Rank'}`,
       imagem: char.character_years?.sort((a, b) => a.year - b.year)[0]?.image_url || '',
       onClick: () => openCharacterModal(char),
       id: char.id,
