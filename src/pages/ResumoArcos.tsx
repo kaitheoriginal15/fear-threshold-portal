@@ -18,7 +18,7 @@ const ResumoArcos = () => {
         </Link>
 
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-title font-bold text-primary mb-8 text-glow animate-fade-in">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-title font-bold text-primary text-glow animate-fade-in mb-8">
             Resumo dos Arcos
           </h1>
           

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ArrowLeft, Plus, Trash2, Search } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Pencil, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import AddBeastModal from "@/components/AddBeastModal";
+import EditBeastModal from "@/components/EditBeastModal";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
@@ -33,6 +34,8 @@ interface Beast {
 
 const Bestiario = () => {
   const [isAddBeastModalOpen, setIsAddBeastModalOpen] = useState(false);
+  const [isEditBeastModalOpen, setIsEditBeastModalOpen] = useState(false);
+  const [beastToEdit, setBeastToEdit] = useState<Beast | null>(null);
   const [beasts, setBeasts] = useState<Beast[]>([]);
   const [selectedBeast, setSelectedBeast] = useState<Beast | null>(null);
   const [beastModalOpen, setBeastModalOpen] = useState(false);
@@ -93,6 +96,43 @@ const Bestiario = () => {
     }
   };
 
+  const editBeast = async (beast: Beast, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    // Fetch full beast data with stats
+    const { data, error } = await supabase
+      .from('beasts')
+      .select(`
+        *,
+        beast_stats!inner (
+          image_url,
+          stats
+        )
+      `)
+      .eq('id', beast.id)
+      .single();
+
+    if (error) {
+      toast({
+        title: 'Erro ao carregar dados',
+        description: error.message,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Transform data to match Beast interface
+    const transformedData: Beast = {
+      ...data,
+      beast_stats: Array.isArray(data.beast_stats) && data.beast_stats.length > 0 
+        ? data.beast_stats[0] 
+        : data.beast_stats
+    };
+
+    setBeastToEdit(transformedData);
+    setIsEditBeastModalOpen(true);
+  };
+
   const openBeastModal = (beast: Beast) => {
     setSelectedBeast(beast);
     setBeastModalOpen(true);
@@ -122,7 +162,7 @@ const Bestiario = () => {
           </Link>
 
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-title font-bold text-primary text-center text-glow flex-1">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-title font-bold text-primary text-glow animate-fade-in">
               Bestiário
             </h1>
             {isAdmin && (
@@ -159,6 +199,13 @@ const Bestiario = () => {
                 {isAdmin && (
                   <div className="absolute top-4 right-4 flex gap-2">
                     <button
+                      onClick={(e) => editBeast(beast, e)}
+                      className="p-2 bg-primary/20 hover:bg-primary/40 rounded-full transition-colors"
+                      title="Editar besta"
+                    >
+                      <Pencil className="w-5 h-5 text-primary" />
+                    </button>
+                    <button
                       onClick={(e) => deleteBeast(beast.id, e)}
                       className="p-2 bg-red-500/20 hover:bg-red-500/40 rounded-full transition-colors"
                       title="Excluir besta"
@@ -188,6 +235,16 @@ const Bestiario = () => {
         isOpen={isAddBeastModalOpen}
         onClose={() => setIsAddBeastModalOpen(false)}
         onSuccess={loadBeasts}
+      />
+
+      <EditBeastModal
+        isOpen={isEditBeastModalOpen}
+        onClose={() => {
+          setIsEditBeastModalOpen(false);
+          setBeastToEdit(null);
+        }}
+        onSuccess={loadBeasts}
+        beast={beastToEdit}
       />
 
       {/* Modal for beast details */}

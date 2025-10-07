@@ -91,15 +91,10 @@ const Livros = () => {
             <span className="font-title">Voltar</span>
           </Link>
 
-          <div className="flex justify-between items-center mb-12">
-            <div className="text-center flex-1 animate-fade-in">
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-title font-bold text-primary mb-4 text-glow">
-                Livros
-              </h2>
-              <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto">
-                Descubra os segredos e conhecimentos ocultos
-              </p>
-            </div>
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-title font-bold text-primary text-glow animate-fade-in">
+              Livros
+            </h1>
             {isAdmin && (
               <button
                 onClick={() => setIsAddBookModalOpen(true)}
