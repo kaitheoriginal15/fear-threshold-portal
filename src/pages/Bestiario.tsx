@@ -171,9 +171,11 @@ const Bestiario = () => {
                 <h2 className="text-2xl md:text-3xl font-title font-semibold text-primary mb-2 group-hover:text-glow transition-all">
                   {beast.name}
                 </h2>
-                <p className="text-gold-light text-sm md:text-base font-title">
-                  {beast.status || 'Criatura Desconhecida'}
-                </p>
+                {beast.rank && (
+                  <p className="text-gold-light text-sm md:text-base font-title">
+                    Rank {beast.rank}
+                  </p>
+                )}
               </div>
             ))}
           </div>
