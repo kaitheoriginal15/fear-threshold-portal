@@ -9,6 +9,7 @@ import Personagens from "./pages/Personagens";
 import Livros from "./pages/Livros";
 import Bestiario from "./pages/Bestiario";
 import TierList from "./pages/TierList";
+import DescubraGrupo from "./pages/DescubraGrupo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/livros" element={<Livros />} />
           <Route path="/bestiario" element={<Bestiario />} />
           <Route path="/tier-list" element={<TierList />} />
+          <Route path="/descubra-grupo" element={<DescubraGrupo />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

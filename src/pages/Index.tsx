@@ -6,6 +6,7 @@ import personagensImage from "@/assets/personagens-new.png";
 import livrosImage from "@/assets/livros.png";
 import bestiarioImage from "@/assets/bestiario.png";
 import tierListImage from "@/assets/tier-list.png";
+import descubraGrupoImage from "@/assets/descubra-grupo.png";
 
 const Index = () => {
   return (
@@ -29,7 +30,7 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <FeatureCard
               title="Resumo dos Arcos"
               image={resumoArcosImage}
@@ -58,6 +59,12 @@ const Index = () => {
               title="Tier List"
               image={tierListImage}
               link="/tier-list"
+            />
+
+            <FeatureCard
+              title="Descubra seu Grupo"
+              image={descubraGrupoImage}
+              link="/descubra-grupo"
             />
           </div>
         </div>
