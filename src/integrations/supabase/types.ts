@@ -171,6 +171,27 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_results: {
+        Row: {
+          created_at: string
+          group_result: string
+          id: string
+          ip_address: string
+        }
+        Insert: {
+          created_at?: string
+          group_result: string
+          id?: string
+          ip_address: string
+        }
+        Update: {
+          created_at?: string
+          group_result?: string
+          id?: string
+          ip_address?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
