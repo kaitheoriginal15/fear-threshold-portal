@@ -21,33 +21,45 @@ serve(async (req) => {
                      req.headers.get('x-real-ip') || 
                      'unknown';
 
-    console.log('Processing quiz for IP:', clientIP);
+    const { answers, userId } = await req.json();
+    
+    console.log('Processing quiz for IP:', clientIP, 'User ID:', userId);
 
-    // Check if IP already has a result
-    const { data: existingResult, error: checkError } = await supabase
-      .from('quiz_results')
-      .select('*')
-      .eq('ip_address', clientIP)
-      .maybeSingle();
-
-    if (checkError) {
-      console.error('Error checking existing result:', checkError);
-      throw checkError;
+    // Check if user is admin
+    let isAdmin = false;
+    if (userId) {
+      const { data: roleData } = await supabase
+        .rpc('has_role', { _user_id: userId, _role: 'admin' });
+      isAdmin = roleData || false;
+      console.log('Is admin:', isAdmin);
     }
 
-    if (existingResult) {
-      console.log('Returning existing result for IP:', clientIP);
-      return new Response(
-        JSON.stringify({ 
-          group: existingResult.group_result,
-          isExisting: true 
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    // Check if IP already has a result (skip check for admins)
+    if (!isAdmin) {
+      const { data: existingResult, error: checkError } = await supabase
+        .from('quiz_results')
+        .select('*')
+        .eq('ip_address', clientIP)
+        .maybeSingle();
+
+      if (checkError) {
+        console.error('Error checking existing result:', checkError);
+        throw checkError;
+      }
+
+      if (existingResult) {
+        console.log('Returning existing result for IP:', clientIP);
+        return new Response(
+          JSON.stringify({ 
+            group: existingResult.group_result,
+            isExisting: true 
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
     // New quiz submission - calculate result
-    const { answers } = await req.json();
     
     if (!answers || !Array.isArray(answers) || answers.length !== 10) {
       throw new Error('Invalid answers format');
@@ -64,65 +76,65 @@ serve(async (req) => {
     // Score each answer (0-3 points per question)
     answers.forEach((answer: string, index: number) => {
       switch (index) {
-        case 0: // Situação de conflito
+        case 0: // Barulho inesperado
           if (answer === 'A') scores.hawise += 3;
           else if (answer === 'B') scores.brenda += 3;
-          else if (answer === 'C') scores.dragomir += 3;
-          else scores.jocosa += 3;
-          break;
-        case 1: // Momento de relaxar
-          if (answer === 'A') scores.jocosa += 3;
-          else if (answer === 'B') scores.brenda += 3;
-          else if (answer === 'C') scores.dragomir += 3;
-          else scores.hawise += 3;
-          break;
-        case 2: // Problema difícil
-          if (answer === 'A') scores.hawise += 3;
-          else if (answer === 'B') scores.jocosa += 3;
-          else if (answer === 'C') scores.brenda += 3;
+          else if (answer === 'C') scores.jocosa += 3;
           else scores.dragomir += 3;
           break;
-        case 3: // Descreve você
-          if (answer === 'A') scores.hawise += 3;
+        case 1: // Tarde livre
+          if (answer === 'A') scores.brenda += 3;
           else if (answer === 'B') scores.jocosa += 3;
-          else if (answer === 'C') scores.dragomir += 3;
-          else scores.brenda += 3;
+          else if (answer === 'C') scores.hawise += 3;
+          else scores.dragomir += 3;
           break;
-        case 4: // Fim de semana
-          if (answer === 'A') scores.hawise += 3;
+        case 2: // Erro grave
+          if (answer === 'A') scores.dragomir += 3;
           else if (answer === 'B') scores.jocosa += 3;
-          else if (answer === 'C') scores.dragomir += 3;
-          else scores.brenda += 3;
+          else if (answer === 'C') scores.brenda += 3;
+          else scores.hawise += 3;
           break;
-        case 5: // Tomar decisão
+        case 3: // Viagem
           if (answer === 'A') scores.brenda += 3;
           else if (answer === 'B') scores.hawise += 3;
           else if (answer === 'C') scores.jocosa += 3;
           else scores.dragomir += 3;
           break;
-        case 6: // Grupo de amigos
+        case 4: // Conversa profunda
+          if (answer === 'A') scores.jocosa += 3;
+          else if (answer === 'B') scores.dragomir += 3;
+          else if (answer === 'C') scores.brenda += 3;
+          else scores.hawise += 3;
+          break;
+        case 5: // Multidão
           if (answer === 'A') scores.hawise += 3;
           else if (answer === 'B') scores.jocosa += 3;
           else if (answer === 'C') scores.dragomir += 3;
           else scores.brenda += 3;
           break;
-        case 7: // Desafio
+        case 6: // Injustiça
           if (answer === 'A') scores.hawise += 3;
           else if (answer === 'B') scores.brenda += 3;
-          else if (answer === 'C') scores.jocosa += 3;
-          else scores.dragomir += 3;
+          else if (answer === 'C') scores.dragomir += 3;
+          else scores.jocosa += 3;
           break;
-        case 8: // Estressado
-          if (answer === 'A') scores.hawise += 3;
-          else if (answer === 'B') scores.dragomir += 3;
+        case 7: // Tempo sozinho
+          if (answer === 'A') scores.dragomir += 3;
+          else if (answer === 'B') scores.brenda += 3;
           else if (answer === 'C') scores.jocosa += 3;
-          else scores.brenda += 3;
+          else scores.hawise += 3;
           break;
-        case 9: // Maior qualidade
+        case 8: // Notícia boa
           if (answer === 'A') scores.hawise += 3;
           else if (answer === 'B') scores.jocosa += 3;
-          else if (answer === 'C') scores.dragomir += 3;
-          else scores.brenda += 3;
+          else if (answer === 'C') scores.brenda += 3;
+          else scores.dragomir += 3;
+          break;
+        case 9: // Crítica
+          if (answer === 'A') scores.brenda += 3;
+          else if (answer === 'B') scores.hawise += 3;
+          else if (answer === 'C') scores.jocosa += 3;
+          else scores.dragomir += 3;
           break;
       }
     });
@@ -135,17 +147,33 @@ serve(async (req) => {
     console.log('Quiz scores:', scores);
     console.log('Determined group:', groupResult);
 
-    // Save the result
-    const { error: insertError } = await supabase
-      .from('quiz_results')
-      .insert({
-        ip_address: clientIP,
-        group_result: groupResult
-      });
+    // Save the result (update if admin, insert if new)
+    if (isAdmin) {
+      const { error: upsertError } = await supabase
+        .from('quiz_results')
+        .upsert({
+          ip_address: clientIP,
+          group_result: groupResult
+        }, {
+          onConflict: 'ip_address'
+        });
 
-    if (insertError) {
-      console.error('Error saving result:', insertError);
-      throw insertError;
+      if (upsertError) {
+        console.error('Error upserting result:', upsertError);
+        throw upsertError;
+      }
+    } else {
+      const { error: insertError } = await supabase
+        .from('quiz_results')
+        .insert({
+          ip_address: clientIP,
+          group_result: groupResult
+        });
+
+      if (insertError) {
+        console.error('Error saving result:', insertError);
+        throw insertError;
+      }
     }
 
     return new Response(

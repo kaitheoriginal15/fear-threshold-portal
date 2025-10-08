@@ -16,93 +16,93 @@ import brendaImg from "@/assets/brenda.png";
 
 const questions = [
   {
-    question: "Como você reage em uma situação de conflito?",
+    question: "Você ouve um barulho inesperado na madrugada. O que você faz?",
     options: [
-      { value: "A", label: "Enfrento de frente com energia e determinação" },
-      { value: "B", label: "Analiso a situação com calma antes de agir" },
-      { value: "C", label: "Busco manter a paz e o equilíbrio" },
-      { value: "D", label: "Procuro descontrair e aliviar a tensão" }
+      { value: "A", label: "Vou investigar imediatamente sem hesitar" },
+      { value: "B", label: "Avalio a situação antes de decidir o que fazer" },
+      { value: "C", label: "Imagino que não é nada e volto a dormir" },
+      { value: "D", label: "Fico atento mas mantenho a calma" }
     ]
   },
   {
-    question: "Em um momento de relaxar, você prefere:",
+    question: "Você tem uma tarde livre sem compromissos. Como você a usa?",
     options: [
-      { value: "A", label: "Atividades tranquilas e serenas" },
-      { value: "B", label: "Ler ou aprender algo novo" },
-      { value: "C", label: "Meditar ou contemplar em silêncio" },
-      { value: "D", label: "Atividades físicas ou competitivas" }
+      { value: "A", label: "Leio algo interessante ou assisto um documentário" },
+      { value: "B", label: "Saio para dar uma volta sem destino certo" },
+      { value: "C", label: "Pratico um esporte ou faço algo físico" },
+      { value: "D", label: "Fico em casa apreciando o silêncio" }
     ]
   },
   {
-    question: "Diante de um problema difícil, você:",
+    question: "Alguém comete um erro grave que afeta você. Como reage?",
     options: [
-      { value: "A", label: "Age rapidamente com confiança" },
-      { value: "B", label: "Deixa fluir naturalmente" },
-      { value: "C", label: "Pensa profundamente antes de decidir" },
-      { value: "D", label: "Permanece calmo e equilibrado" }
+      { value: "A", label: "Deixo passar e busco não guardar ressentimento" },
+      { value: "B", label: "Tento aliviar o clima com humor" },
+      { value: "C", label: "Converso para entender o que aconteceu" },
+      { value: "D", label: "Sinto raiva mas tento controlar" }
     ]
   },
   {
-    question: "Qual palavra melhor descreve você?",
+    question: "Se pudesse viajar agora, para onde iria?",
     options: [
-      { value: "A", label: "Eufórico" },
-      { value: "B", label: "Leve" },
-      { value: "C", label: "Pacífico" },
-      { value: "D", label: "Inteligente" }
+      { value: "A", label: "Um museu ou biblioteca famosa" },
+      { value: "B", label: "Um parque de aventuras ou lugar radical" },
+      { value: "C", label: "Uma praia deserta e tranquila" },
+      { value: "D", label: "Um retiro nas montanhas" }
     ]
   },
   {
-    question: "Como você gosta de passar um fim de semana?",
+    question: "Durante uma conversa profunda, você geralmente:",
     options: [
-      { value: "A", label: "Participando de competições ou desafios" },
-      { value: "B", label: "Relaxando sem compromissos" },
-      { value: "C", label: "Em contemplação ou atividades calmas" },
-      { value: "D", label: "Estudando ou explorando novos conhecimentos" }
+      { value: "A", label: "Muda de assunto para algo mais leve" },
+      { value: "B", label: "Ouve mais do que fala" },
+      { value: "C", label: "Faz perguntas para aprofundar o tema" },
+      { value: "D", label: "Compartilha suas próprias experiências com emoção" }
     ]
   },
   {
-    question: "Ao tomar uma decisão importante, você:",
+    question: "Você está em uma multidão. Como se sente?",
     options: [
-      { value: "A", label: "Analisa todos os ângulos cuidadosamente" },
-      { value: "B", label: "Confia na sua intuição e age" },
-      { value: "C", label: "Segue o caminho mais leve e natural" },
-      { value: "D", label: "Busca o equilíbrio entre todas as opções" }
+      { value: "A", label: "Empolgado com toda essa energia" },
+      { value: "B", label: "Bem, mas prefiro grupos menores" },
+      { value: "C", label: "Um pouco desconfortável" },
+      { value: "D", label: "Observo as pessoas ao redor" }
     ]
   },
   {
-    question: "Em um grupo de amigos, você é:",
+    question: "Você presencia uma injustiça. Qual sua reação?",
     options: [
-      { value: "A", label: "O animado que traz energia" },
-      { value: "B", label: "O que mantém tudo leve e descontraído" },
-      { value: "C", label: "O mediador que traz paz" },
-      { value: "D", label: "O conselheiro sábio" }
+      { value: "A", label: "Interfiro imediatamente" },
+      { value: "B", label: "Penso na melhor forma de ajudar" },
+      { value: "C", label: "Tento mediar a situação" },
+      { value: "D", label: "Tento desescalar o conflito com palavras" }
     ]
   },
   {
-    question: "Quando enfrenta um desafio, você:",
+    question: "Como você aproveita um tempo sozinho?",
     options: [
-      { value: "A", label: "Se empolga e mergulha de cabeça" },
-      { value: "B", label: "Elabora uma estratégia detalhada" },
-      { value: "C", label: "Enfrenta com leveza, sem estresse" },
-      { value: "D", label: "Mantém a calma e age com serenidade" }
+      { value: "A", label: "Medito ou simplesmente não faço nada" },
+      { value: "B", label: "Organizo meus pensamentos e planos" },
+      { value: "C", label: "Ouço música ou danço" },
+      { value: "D", label: "Sinto falta de companhia logo" }
     ]
   },
   {
-    question: "Quando está estressado, você:",
+    question: "Você recebe uma notícia muito boa. Como reage?",
     options: [
-      { value: "A", label: "Libera energia através de ação" },
-      { value: "B", label: "Busca silêncio e introspecção" },
-      { value: "C", label: "Procura algo que te faça rir" },
-      { value: "D", label: "Reflete sobre o problema racionalmente" }
+      { value: "A", label: "Comemoro com entusiasmo!" },
+      { value: "B", label: "Sorrio e agradeço internamente" },
+      { value: "C", label: "Analiso o que isso significa para meu futuro" },
+      { value: "D", label: "Sinto alegria mas de forma contida" }
     ]
   },
   {
-    question: "Qual você considera sua maior qualidade?",
+    question: "Alguém critica algo que você fez. Sua primeira reação é:",
     options: [
-      { value: "A", label: "Coragem e determinação" },
-      { value: "B", label: "Leveza e positividade" },
-      { value: "C", label: "Paz interior e equilíbrio" },
-      { value: "D", label: "Inteligência e análise" }
+      { value: "A", label: "Reflito sobre o feedback" },
+      { value: "B", label: "Me defendo com firmeza" },
+      { value: "C", label: "Faço uma piada sobre a situação" },
+      { value: "D", label: "Aceito sem me abalar muito" }
     ]
   }
 ];
@@ -142,9 +142,30 @@ const DescubraGrupo = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [result, setResult] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isExisting, setIsExisting] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    checkExistingResult();
+  }, []);
+
+  const checkExistingResult = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('check-quiz-result');
+
+      if (error) throw error;
+
+      if (data.hasResult) {
+        setResult(data.group);
+        setIsExisting(true);
+      }
+    } catch (error) {
+      console.error('Error checking existing result:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleAnswer = (value: string) => {
     const newAnswers = [...answers];
@@ -178,8 +199,13 @@ const DescubraGrupo = () => {
   const submitQuiz = async () => {
     setIsLoading(true);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
       const { data, error } = await supabase.functions.invoke('submit-quiz', {
-        body: { answers }
+        body: { 
+          answers,
+          userId: user?.id 
+        }
       });
 
       if (error) throw error;
@@ -205,12 +231,17 @@ const DescubraGrupo = () => {
     }
   };
 
-  const resetQuiz = () => {
-    setCurrentQuestion(0);
-    setAnswers([]);
-    setResult(null);
-    setIsExisting(false);
-  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-dark flex flex-col">
+        <Navbar />
+        <main className="container mx-auto px-4 pt-32 pb-16 flex-grow flex items-center justify-center">
+          <p className="text-primary text-xl">Carregando...</p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (result) {
     const group = groupData[result as keyof typeof groupData];
