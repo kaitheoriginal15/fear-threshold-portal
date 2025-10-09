@@ -111,29 +111,29 @@ const groupData = {
   hawise: {
     name: "Hawise",
     description: "Conhecidos pela sua personalidade eufórica e comumente associada a pessoas que gostam de batalhas. Você carrega uma energia intensa e é movido pela adrenalina de desafios e conquistas.",
-    theme: "from-red-600 to-red-800",
-    textColor: "text-red-100",
+    bgColor: "#444343",
+    textColor: "text-white",
     image: hawiseImg
   },
   jocosa: {
     name: "Jocosa",
     description: "Tem a personalidade de leveza, é alguém que carrega uma aura tranquila e serena, capaz de transformar o ambiente apenas com sua presença. Você tende a lidar com a vida de forma descomplicada, sem se deixar abalar facilmente por problemas ou tensões.",
-    theme: "from-green-600 to-green-800",
-    textColor: "text-green-100",
+    bgColor: "#F66200",
+    textColor: "text-white",
     image: jocosaImg
   },
   dragomir: {
     name: "Dragomir",
     description: "Tem a personalidade de paz, é alguém que carrega silêncio por dentro, não por falta de voz, mas por equilíbrio. Você transmite tranquilidade genuína, não sente necessidade de disputar, convencer ou se impor, apenas estar presente já basta para acalmar quem está por perto.",
-    theme: "from-cyan-600 to-cyan-800",
-    textColor: "text-cyan-100",
+    bgColor: "#4CB8F7",
+    textColor: "text-white",
     image: dragomirImg
   },
   brenda: {
     name: "Brenda",
     description: "Tem a personalidade inteligente, é alguém que observa antes de agir, e pensa antes de falar. Sua mente é ágil, analítica e curiosa, sempre buscando entender o porquê das coisas. Você enxerga conexões onde outros veem apenas fragmentos, e transforma informação em compreensão profunda.",
-    theme: "from-purple-600 to-purple-800",
-    textColor: "text-purple-100",
+    bgColor: "#8E7348",
+    textColor: "text-white",
     image: brendaImg
   }
 };
@@ -267,7 +267,7 @@ const DescubraGrupo = () => {
               {isExisting ? "Seu Resultado" : "Seu Grupo é..."}
             </h1>
             
-            <Card className={`bg-gradient-to-br ${group.theme} border-none animate-fade-in`}>
+            <Card className="border-none animate-fade-in" style={{ backgroundColor: group.bgColor }}>
               <CardHeader>
                 <div className="flex flex-col items-center gap-6">
                   <img 
