@@ -152,7 +152,11 @@ const DescubraGrupo = () => {
 
   const checkExistingResult = async () => {
     try {
-      const { data, error } = await supabase.functions.invoke('check-quiz-result');
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const { data, error } = await supabase.functions.invoke('check-quiz-result', {
+        body: { userId: user?.id }
+      });
 
       if (error) throw error;
 

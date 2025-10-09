@@ -21,7 +21,27 @@ serve(async (req) => {
                      req.headers.get('x-real-ip') || 
                      'unknown';
 
-    console.log('Checking quiz result for IP:', clientIP);
+    const { userId } = await req.json();
+    
+    console.log('Checking quiz result for IP:', clientIP, 'User ID:', userId);
+
+    // Check if user is admin
+    let isAdmin = false;
+    if (userId) {
+      const { data: roleData } = await supabase
+        .rpc('has_role', { _user_id: userId, _role: 'admin' });
+      isAdmin = roleData || false;
+      console.log('Is admin:', isAdmin);
+    }
+
+    // Admins can always retake the quiz
+    if (isAdmin) {
+      console.log('Admin user - allowing quiz retake');
+      return new Response(
+        JSON.stringify({ hasResult: false }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     // Check if IP already has a result
     const { data: existingResult, error: checkError } = await supabase
