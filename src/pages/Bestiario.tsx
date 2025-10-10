@@ -218,9 +218,11 @@ const Bestiario = () => {
                 <h2 className="text-2xl md:text-3xl font-title font-semibold text-primary mb-2 group-hover:text-glow transition-all">
                   {beast.name}
                 </h2>
-                <p className="text-gold-light text-sm md:text-base font-title">
-                  {beast.rank ? `Rank ${beast.rank}` : 'Sem Rank'}
-                </p>
+                {beast.rank && (
+                  <p className="text-gold-light text-sm md:text-base font-title">
+                    Rank {beast.rank}
+                  </p>
+                )}
               </div>
             ))}
           </div>
@@ -303,7 +305,7 @@ const Bestiario = () => {
                     <h4 className="text-xl font-title text-primary mb-4">Estatísticas</h4>
                     <div className="space-y-4">
                       {Object.entries(selectedBeast.beast_stats.stats)
-                        .filter(([_, value]) => value !== undefined && value !== null && value !== 0)
+                        .filter(([_, value]) => value !== undefined && value !== null)
                         .map(([key, value]) => {
                           const labels: Record<string, string> = {
                             resistencia: 'Resistência',
@@ -335,7 +337,7 @@ const Bestiario = () => {
                           <span className="text-primary font-title font-bold text-lg">Total</span>
                           <span className="text-primary font-bold text-lg">
                             {Object.values(selectedBeast.beast_stats.stats)
-                              .filter(v => v !== undefined && v !== null && v !== 0)
+                              .filter(v => v !== undefined && v !== null)
                               .reduce((sum, v) => sum + (v as number), 0)}/60
                           </span>
                         </div>
