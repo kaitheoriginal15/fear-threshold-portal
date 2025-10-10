@@ -27,6 +27,7 @@ interface CharacterYear {
     habilidadeGeral?: number;
     conhecimento?: number;
     arsenal?: number;
+    reservaEnergia?: number;
   };
 }
 
@@ -78,6 +79,7 @@ const Personagens = () => {
           { name: "Habilidade Geral", value: 2 },
           { name: "Conhecimento", value: 0 },
           { name: "Arsenal", value: 0 },
+          { name: "Reserva de Energia", value: 0 },
         ];
       case "1991-1992":
         return [
@@ -90,6 +92,7 @@ const Personagens = () => {
           { name: "Habilidade Geral", value: 4 },
           { name: "Conhecimento", value: 2 },
           { name: "Arsenal", value: 3 },
+          { name: "Reserva de Energia", value: 0 },
         ];
       case "1995":
         return [
@@ -102,6 +105,7 @@ const Personagens = () => {
           { name: "Habilidade Geral", value: 5 },
           { name: "Conhecimento", value: 4 },
           { name: "Arsenal", value: 4 },
+          { name: "Reserva de Energia", value: 0 },
         ];
     }
   };
@@ -497,6 +501,7 @@ const Personagens = () => {
                       { name: "Habilidade Geral", value: currentYearData.stats.habilidadeGeral || 0 },
                       { name: "Conhecimento", value: currentYearData.stats.conhecimento || 0 },
                       { name: "Arsenal", value: currentYearData.stats.arsenal || 0 },
+                      { name: "Reserva de Energia", value: currentYearData.stats.reservaEnergia || 0 },
                     ];
 
                     const totalStats = stats.reduce((sum, stat) => sum + stat.value, 0);
@@ -537,7 +542,7 @@ const Personagens = () => {
                             <div className="pt-4 border-t border-primary/30 mt-6">
                               <div className="flex justify-between">
                                 <span className="text-primary font-title font-bold text-lg">Total</span>
-                                <span className="text-primary font-bold text-lg">{totalStats}/90</span>
+                                <span className="text-primary font-bold text-lg">{totalStats}/100</span>
                               </div>
                             </div>
                           </div>

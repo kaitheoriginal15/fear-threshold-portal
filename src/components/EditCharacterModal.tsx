@@ -29,6 +29,7 @@ interface Character {
       habilidadeGeral?: number;
       conhecimento?: number;
       arsenal?: number;
+      reservaEnergia?: number;
     };
   }[];
 }
@@ -54,6 +55,7 @@ interface YearData {
     habilidadeGeral: number;
     conhecimento: number;
     arsenal: number;
+    reservaEnergia: number;
   };
 }
 
@@ -66,7 +68,7 @@ const EditCharacterModal = ({ isOpen, onClose, onSuccess, character }: EditChara
   const [rank, setRank] = useState('');
   const [description, setDescription] = useState('');
   
-  const defaultStats = { resistencia: 0, forca: 0, velocidade: 0, controleEnergia: 0, ilusao: 0, inteligencia: 0, habilidadeGeral: 0, conhecimento: 0, arsenal: 0 };
+  const defaultStats = { resistencia: 0, forca: 0, velocidade: 0, controleEnergia: 0, ilusao: 0, inteligencia: 0, habilidadeGeral: 0, conhecimento: 0, arsenal: 0, reservaEnergia: 0 };
   
   const [yearsData, setYearsData] = useState<YearData[]>([
     { year: 1990, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
@@ -103,6 +105,7 @@ const EditCharacterModal = ({ isOpen, onClose, onSuccess, character }: EditChara
               habilidadeGeral: existingYear.stats.habilidadeGeral || 0,
               conhecimento: existingYear.stats.conhecimento || 0,
               arsenal: existingYear.stats.arsenal || 0,
+              reservaEnergia: existingYear.stats.reservaEnergia || 0,
             }
           };
         }
@@ -327,6 +330,7 @@ const EditCharacterModal = ({ isOpen, onClose, onSuccess, character }: EditChara
                       { key: 'habilidadeGeral', label: 'Habilidade Geral' },
                       { key: 'conhecimento', label: 'Conhecimento' },
                       { key: 'arsenal', label: 'Arsenal' },
+                      { key: 'reservaEnergia', label: 'Reserva de Energia' },
                     ].map(({ key, label }) => (
                       <div key={key} className="space-y-2">
                         <Label className="text-white">{label}</Label>
