@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, Trash2 } from 'lucide-react';
 
 interface AddCharacterModalProps {
   isOpen: boolean;
@@ -43,14 +44,43 @@ const AddCharacterModal = ({ isOpen, onClose, onSuccess }: AddCharacterModalProp
   
   const defaultStats = { resistencia: 0, forca: 0, velocidade: 0, controleEnergia: 0, ilusao: 0, inteligencia: 0, habilidadeGeral: 0, conhecimento: 0, arsenal: 0, reservaEnergia: 0 };
   
-  const [yearsData, setYearsData] = useState<YearData[]>([
-    { year: 1990, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
-    { year: 1991, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
-    { year: 1992, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
-    { year: 1993, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
-    { year: 1994, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
-    { year: 1995, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
-  ]);
+  const [yearsData, setYearsData] = useState<YearData[]>([]);
+  const [newYear, setNewYear] = useState<string>('');
+
+  const addYear = () => {
+    const year = parseInt(newYear);
+    if (isNaN(year) || year < 1000 || year > 9999) {
+      toast({
+        title: 'Ano inválido',
+        description: 'Por favor, insira um ano válido (entre 1000 e 9999).',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    if (yearsData.some(y => y.year === year)) {
+      toast({
+        title: 'Ano já existe',
+        description: 'Este ano já foi adicionado.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    const newYearData: YearData = {
+      year,
+      imageUrl: '',
+      imageFile: null,
+      stats: { ...defaultStats }
+    };
+    
+    setYearsData(prev => [...prev, newYearData].sort((a, b) => a.year - b.year));
+    setNewYear('');
+  };
+
+  const removeYear = (year: number) => {
+    setYearsData(prev => prev.filter(y => y.year !== year));
+  };
 
   const updateYearData = (yearIndex: number, field: string, value: string | number | File) => {
     setYearsData(prev => {
@@ -155,14 +185,8 @@ const AddCharacterModal = ({ isOpen, onClose, onSuccess }: AddCharacterModalProp
     setGender('');
     setRank('');
     setDescription('');
-    setYearsData([
-      { year: 1990, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
-      { year: 1991, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
-      { year: 1992, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
-      { year: 1993, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
-      { year: 1994, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
-      { year: 1995, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
-    ]);
+    setYearsData([]);
+    setNewYear('');
   };
 
   return (
@@ -232,61 +256,105 @@ const AddCharacterModal = ({ isOpen, onClose, onSuccess }: AddCharacterModalProp
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-white text-lg font-semibold">Anos (1990-1995)</h3>
-            <Tabs defaultValue="1990" className="w-full">
-              <TabsList className="grid grid-cols-6 w-full bg-black/50">
-                {yearsData.map((year) => (
-                  <TabsTrigger key={year.year} value={year.year.toString()}>
-                    {year.year}
-                  </TabsTrigger>
+            <div className="flex justify-between items-center">
+              <h3 className="text-white text-lg font-semibold">Anos</h3>
+              <div className="flex gap-2">
+                <Input
+                  type="number"
+                  placeholder="Ex: 1975"
+                  value={newYear}
+                  onChange={(e) => setNewYear(e.target.value)}
+                  className="bg-black/50 border-primary/30 text-white w-32"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      addYear();
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  onClick={addYear}
+                  className="flex items-center gap-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  Adicionar Ano
+                </Button>
+              </div>
+            </div>
+            
+            {yearsData.length === 0 ? (
+              <p className="text-white/60 text-center py-8">
+                Nenhum ano adicionado. Adicione anos para configurar as estatísticas do personagem.
+              </p>
+            ) : (
+              <Tabs defaultValue={yearsData[0]?.year.toString()} className="w-full">
+                <TabsList className={`grid w-full bg-black/50`} style={{ gridTemplateColumns: `repeat(${yearsData.length}, minmax(0, 1fr))` }}>
+                  {yearsData.map((year) => (
+                    <TabsTrigger key={year.year} value={year.year.toString()}>
+                      {year.year}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+                {yearsData.map((yearData, index) => (
+                  <TabsContent key={yearData.year} value={yearData.year.toString()} className="space-y-4">
+                    <div className="flex justify-end">
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => removeYear(yearData.year)}
+                        className="flex items-center gap-2"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remover {yearData.year}
+                      </Button>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-white">Imagem do Personagem</Label>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) updateYearData(index, 'imageFile', file);
+                        }}
+                        className="bg-black/50 border-primary/30 text-white"
+                      />
+                      {yearData.imageFile && (
+                        <p className="text-sm text-primary">{yearData.imageFile.name}</p>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                      {[
+                        { key: 'resistencia', label: 'Resistência' },
+                        { key: 'forca', label: 'Força' },
+                        { key: 'velocidade', label: 'Velocidade' },
+                        { key: 'controleEnergia', label: 'Controle de Energia' },
+                        { key: 'ilusao', label: 'Ilusão' },
+                        { key: 'inteligencia', label: 'Inteligência' },
+                        { key: 'habilidadeGeral', label: 'Habilidade Geral' },
+                        { key: 'conhecimento', label: 'Conhecimento' },
+                        { key: 'arsenal', label: 'Arsenal' },
+                        { key: 'reservaEnergia', label: 'Reserva de Energia' },
+                      ].map(({ key, label }) => (
+                        <div key={key} className="space-y-2">
+                          <Label className="text-white">{label}</Label>
+                          <Input
+                            type="number"
+                            min="0"
+                            max="10"
+                            value={yearData.stats[key as keyof typeof yearData.stats]}
+                            onChange={(e) => updateYearData(index, key, e.target.value)}
+                            className="bg-black/50 border-primary/30 text-white"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </TabsContent>
                 ))}
-              </TabsList>
-              {yearsData.map((yearData, index) => (
-                <TabsContent key={yearData.year} value={yearData.year.toString()} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label className="text-white">Imagem do Personagem</Label>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) updateYearData(index, 'imageFile', file);
-                      }}
-                      className="bg-black/50 border-primary/30 text-white"
-                    />
-                    {yearData.imageFile && (
-                      <p className="text-sm text-primary">{yearData.imageFile.name}</p>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-3 gap-4">
-                    {[
-                      { key: 'resistencia', label: 'Resistência' },
-                      { key: 'forca', label: 'Força' },
-                      { key: 'velocidade', label: 'Velocidade' },
-                      { key: 'controleEnergia', label: 'Controle de Energia' },
-                      { key: 'ilusao', label: 'Ilusão' },
-                      { key: 'inteligencia', label: 'Inteligência' },
-                      { key: 'habilidadeGeral', label: 'Habilidade Geral' },
-                      { key: 'conhecimento', label: 'Conhecimento' },
-                      { key: 'arsenal', label: 'Arsenal' },
-                      { key: 'reservaEnergia', label: 'Reserva de Energia' },
-                    ].map(({ key, label }) => (
-                      <div key={key} className="space-y-2">
-                        <Label className="text-white">{label}</Label>
-                        <Input
-                          type="number"
-                          min="0"
-                          max="10"
-                          value={yearData.stats[key as keyof typeof yearData.stats]}
-                          onChange={(e) => updateYearData(index, key, e.target.value)}
-                          className="bg-black/50 border-primary/30 text-white"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </TabsContent>
-              ))}
-            </Tabs>
+              </Tabs>
+            )}
           </div>
 
           <Button 
