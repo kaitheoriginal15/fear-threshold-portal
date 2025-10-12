@@ -7,7 +7,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Trash2 } from 'lucide-react';
 
 interface Character {
   id: string;
@@ -71,11 +70,17 @@ const EditCharacterModal = ({ isOpen, onClose, onSuccess, character }: EditChara
   
   const defaultStats = { resistencia: 0, forca: 0, velocidade: 0, controleEnergia: 0, ilusao: 0, inteligencia: 0, habilidadeGeral: 0, conhecimento: 0, arsenal: 0, reservaEnergia: 0 };
   
-  const [yearsData, setYearsData] = useState<YearData[]>([]);
-  const [newYear, setNewYear] = useState<string>('');
+  const [yearsData, setYearsData] = useState<YearData[]>([
+    { year: 1990, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+    { year: 1991, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+    { year: 1992, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+    { year: 1993, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+    { year: 1994, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+    { year: 1995, imageUrl: '', imageFile: null, stats: { ...defaultStats } },
+  ]);
 
   useEffect(() => {
-    if (character && character.character_years) {
+    if (character) {
       setName(character.name);
       setBirthDate(character.birth_date || '');
       setStatus(character.status || '');
@@ -83,65 +88,32 @@ const EditCharacterModal = ({ isOpen, onClose, onSuccess, character }: EditChara
       setRank(character.rank || '');
       setDescription(character.description || '');
 
-      // Load existing years data from character
-      const loadedYearsData: YearData[] = character.character_years
-        .map(cy => ({
-          year: cy.year,
-          imageUrl: cy.image_url || '',
-          imageFile: null,
-          stats: {
-            resistencia: cy.stats.resistencia || 0,
-            forca: cy.stats.forca || 0,
-            velocidade: cy.stats.velocidade || 0,
-            controleEnergia: cy.stats.controleEnergia || 0,
-            ilusao: cy.stats.ilusao || 0,
-            inteligencia: cy.stats.inteligencia || 0,
-            habilidadeGeral: cy.stats.habilidadeGeral || 0,
-            conhecimento: cy.stats.conhecimento || 0,
-            arsenal: cy.stats.arsenal || 0,
-            reservaEnergia: cy.stats.reservaEnergia || 0,
-          }
-        }))
-        .sort((a, b) => a.year - b.year);
-      
-      setYearsData(loadedYearsData);
+      // Load existing years data
+      const updatedYearsData = yearsData.map(yearData => {
+        const existingYear = character.character_years?.find(cy => cy.year === yearData.year);
+        if (existingYear) {
+          return {
+            ...yearData,
+            imageUrl: existingYear.image_url || '',
+            stats: {
+              resistencia: existingYear.stats.resistencia || 0,
+              forca: existingYear.stats.forca || 0,
+              velocidade: existingYear.stats.velocidade || 0,
+              controleEnergia: existingYear.stats.controleEnergia || 0,
+              ilusao: existingYear.stats.ilusao || 0,
+              inteligencia: existingYear.stats.inteligencia || 0,
+              habilidadeGeral: existingYear.stats.habilidadeGeral || 0,
+              conhecimento: existingYear.stats.conhecimento || 0,
+              arsenal: existingYear.stats.arsenal || 0,
+              reservaEnergia: existingYear.stats.reservaEnergia || 0,
+            }
+          };
+        }
+        return yearData;
+      });
+      setYearsData(updatedYearsData);
     }
   }, [character]);
-
-  const addYear = () => {
-    const year = parseInt(newYear);
-    if (isNaN(year) || year < 1000 || year > 9999) {
-      toast({
-        title: 'Ano inválido',
-        description: 'Por favor, insira um ano válido (entre 1000 e 9999).',
-        variant: 'destructive',
-      });
-      return;
-    }
-    
-    if (yearsData.some(y => y.year === year)) {
-      toast({
-        title: 'Ano já existe',
-        description: 'Este ano já foi adicionado.',
-        variant: 'destructive',
-      });
-      return;
-    }
-    
-    const newYearData: YearData = {
-      year,
-      imageUrl: '',
-      imageFile: null,
-      stats: { ...defaultStats }
-    };
-    
-    setYearsData(prev => [...prev, newYearData].sort((a, b) => a.year - b.year));
-    setNewYear('');
-  };
-
-  const removeYear = (year: number) => {
-    setYearsData(prev => prev.filter(y => y.year !== year));
-  };
 
   const updateYearData = (yearIndex: number, field: string, value: string | number | File) => {
     setYearsData(prev => {
@@ -315,111 +287,67 @@ const EditCharacterModal = ({ isOpen, onClose, onSuccess, character }: EditChara
           </div>
 
           <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-white text-lg font-semibold">Anos</h3>
-              <div className="flex gap-2">
-                <Input
-                  type="number"
-                  placeholder="Ex: 1975"
-                  value={newYear}
-                  onChange={(e) => setNewYear(e.target.value)}
-                  className="bg-black/50 border-primary/30 text-white w-32"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      addYear();
-                    }
-                  }}
-                />
-                <Button
-                  type="button"
-                  onClick={addYear}
-                  className="flex items-center gap-2"
-                >
-                  <Plus className="w-4 h-4" />
-                  Adicionar Ano
-                </Button>
-              </div>
-            </div>
-            
-            {yearsData.length === 0 ? (
-              <p className="text-white/60 text-center py-8">
-                Nenhum ano adicionado. Adicione anos para configurar as estatísticas do personagem.
-              </p>
-            ) : (
-              <Tabs defaultValue={yearsData[0]?.year.toString()} className="w-full">
-                <TabsList className={`grid w-full bg-black/50`} style={{ gridTemplateColumns: `repeat(${yearsData.length}, minmax(0, 1fr))` }}>
-                  {yearsData.map((year) => (
-                    <TabsTrigger key={year.year} value={year.year.toString()}>
-                      {year.year}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-                {yearsData.map((yearData, index) => (
-                  <TabsContent key={yearData.year} value={yearData.year.toString()} className="space-y-4">
-                    <div className="flex justify-end">
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeYear(yearData.year)}
-                        className="flex items-center gap-2"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        Remover {yearData.year}
-                      </Button>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-white">Imagem do Personagem</Label>
-                      {yearData.imageUrl && !yearData.imageFile && (
-                        <div className="mb-2">
-                          <img src={yearData.imageUrl} alt="Preview" className="w-32 h-32 object-cover rounded border border-primary/30" />
-                          <p className="text-sm text-primary mt-1">Imagem atual</p>
-                        </div>
-                      )}
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) updateYearData(index, 'imageFile', file);
-                        }}
-                        className="bg-black/50 border-primary/30 text-white"
-                      />
-                      {yearData.imageFile && (
-                        <p className="text-sm text-primary">{yearData.imageFile.name}</p>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-3 gap-4">
-                      {[
-                        { key: 'resistencia', label: 'Resistência' },
-                        { key: 'forca', label: 'Força' },
-                        { key: 'velocidade', label: 'Velocidade' },
-                        { key: 'controleEnergia', label: 'Controle de Energia' },
-                        { key: 'ilusao', label: 'Ilusão' },
-                        { key: 'inteligencia', label: 'Inteligência' },
-                        { key: 'habilidadeGeral', label: 'Habilidade Geral' },
-                        { key: 'conhecimento', label: 'Conhecimento' },
-                        { key: 'arsenal', label: 'Arsenal' },
-                        { key: 'reservaEnergia', label: 'Reserva de Energia' },
-                      ].map(({ key, label }) => (
-                        <div key={key} className="space-y-2">
-                          <Label className="text-white">{label}</Label>
-                          <Input
-                            type="number"
-                            min="0"
-                            max="10"
-                            value={yearData.stats[key as keyof typeof yearData.stats]}
-                            onChange={(e) => updateYearData(index, key, e.target.value)}
-                            className="bg-black/50 border-primary/30 text-white"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </TabsContent>
+            <h3 className="text-white text-lg font-semibold">Anos (1990-1995)</h3>
+            <Tabs defaultValue="1990" className="w-full">
+              <TabsList className="grid grid-cols-6 w-full bg-black/50">
+                {yearsData.map((year) => (
+                  <TabsTrigger key={year.year} value={year.year.toString()}>
+                    {year.year}
+                  </TabsTrigger>
                 ))}
-              </Tabs>
-            )}
+              </TabsList>
+              {yearsData.map((yearData, index) => (
+                <TabsContent key={yearData.year} value={yearData.year.toString()} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label className="text-white">Imagem do Personagem</Label>
+                    {yearData.imageUrl && !yearData.imageFile && (
+                      <div className="mb-2">
+                        <img src={yearData.imageUrl} alt="Preview" className="w-32 h-32 object-cover rounded border border-primary/30" />
+                        <p className="text-sm text-primary mt-1">Imagem atual</p>
+                      </div>
+                    )}
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) updateYearData(index, 'imageFile', file);
+                      }}
+                      className="bg-black/50 border-primary/30 text-white"
+                    />
+                    {yearData.imageFile && (
+                      <p className="text-sm text-primary">{yearData.imageFile.name}</p>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    {[
+                      { key: 'resistencia', label: 'Resistência' },
+                      { key: 'forca', label: 'Força' },
+                      { key: 'velocidade', label: 'Velocidade' },
+                      { key: 'controleEnergia', label: 'Controle de Energia' },
+                      { key: 'ilusao', label: 'Ilusão' },
+                      { key: 'inteligencia', label: 'Inteligência' },
+                      { key: 'habilidadeGeral', label: 'Habilidade Geral' },
+                      { key: 'conhecimento', label: 'Conhecimento' },
+                      { key: 'arsenal', label: 'Arsenal' },
+                      { key: 'reservaEnergia', label: 'Reserva de Energia' },
+                    ].map(({ key, label }) => (
+                      <div key={key} className="space-y-2">
+                        <Label className="text-white">{label}</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="10"
+                          value={yearData.stats[key as keyof typeof yearData.stats]}
+                          onChange={(e) => updateYearData(index, key, e.target.value)}
+                          className="bg-black/50 border-primary/30 text-white"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+              ))}
+            </Tabs>
           </div>
 
           <Button 
